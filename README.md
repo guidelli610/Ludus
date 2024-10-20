@@ -1,3 +1,3 @@
 Jogo de xadrez React
 
-teste1
+Utilizando a biblioteca Express para criação do servidor, e a Socket.io para conexão simultânea

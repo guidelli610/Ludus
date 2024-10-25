@@ -8,11 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "nodemon server_test.cjs"
+    "start": "nodemon ./server_test/server_test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "mysql2": "^3.11.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "socket.io": "^4.8.0"

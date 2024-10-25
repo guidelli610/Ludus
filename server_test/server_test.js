@@ -1,5 +1,8 @@
-const express = require('express');
-const cors = require('cors');
+//Instanciamento do server
+import express from 'express'
+import cors from 'cors'
+import connection from './db.js'
+
 const app = express();
 app.use(cors());
 const port = 3000;
@@ -26,9 +29,17 @@ app.get('/contato', (req, res) => {
   res.send('Página de contato');
 });
 
-// Manipulação de Usuários
-app.post('/users', (req, res) => {
-  res.send('Usuário criado');
+// Manipulação de Dados
+app.post('/register', (req, res) => {
+  const { nome, email, senha } = req.body;
+  const sql = 'CALL create_player(?,?,?);';
+  connection.query(sql, [nome, email, senha], (err, results) => {
+    if (err) {
+        console.error(err); // Log do erro
+        return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ id: results.insertId, nome, email, senha });
+  });
 });
 
 app.put('/users/:id', (req, res) => {
@@ -37,12 +48,6 @@ app.put('/users/:id', (req, res) => {
 
 app.delete('/users/:id', (req, res) => {
   res.send(`Usuário ${req.params.id} deletado`);
-});
-
-// Manipulação de Dados
-app.post('/dados', (req, res) => {
-  const { nome, idade } = req.body;
-  res.json({ message: `Nome: ${nome}, Idade: ${idade}` });
 });
 
 // Iniciar o servidor

@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "nodemon ./server_test/server_test.js"
+    "server": "nodemon ./server_test/server_test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

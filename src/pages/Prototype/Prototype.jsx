@@ -1,4 +1,4 @@
-import "./run"
+import "./create_player"
 
 export default function Prototype(){
     return (

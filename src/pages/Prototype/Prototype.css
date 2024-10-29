@@ -1,0 +1,35 @@
+.p_inner {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    max-width: 440px;
+    width: calc(100% - 40px);
+    padding: 44px;
+    margin-bottom: 28px;
+    background-color: #6d6d6d;
+    -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    min-width: 320px;
+    min-height: 338px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.p_form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.p_button {
+    margin-top: 35px;
+}
+
+.p_title {
+    font-size: 2em;
+    line-height: 1;
+    margin-bottom: 15px;
+    font-weight: bold;
+}

@@ -11,7 +11,7 @@ export default function handleFormSubmit() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ nome, email, idade, senha }),
+            body: JSON.stringify({ nome, email, senha }),
         })
         .then(response => {
             if (!response.ok) {

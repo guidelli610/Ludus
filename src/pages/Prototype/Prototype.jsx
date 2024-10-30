@@ -7,8 +7,8 @@ import "./Prototype.css"
 export default function Prototype(){
     return (
         <>
-            <Link to="/prototype"></Link>
-            <P2/>
+            <Link to="/prototype2">Prototype2</Link>
+            <P1/>
         </>
     );
 }

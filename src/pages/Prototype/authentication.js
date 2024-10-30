@@ -2,7 +2,6 @@ export default function authentication(setIsSubmitting) {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    let returner = document.getElementById('returner').value;
 
     fetch('http://localhost:3000/login', {
         method: 'POST',
@@ -18,10 +17,15 @@ export default function authentication(setIsSubmitting) {
         return response.json();
     })
     .then(data => {
-        console.log("Data: ", data);
-        alert(`Acessado com sucesso!`);
-        returner = toString(data);
-        return data.authentication;
+        if (data.token){
+            localStorage.setItem('token', data.token);
+            console.log('Token Encontrado!')
+        }
+        else
+        {
+            console.log(`Token não encontrado!`);
+        }
+        alert('Login bem sucedido!')
     })
     .catch((error) => {
         console.error('Erro:', error);

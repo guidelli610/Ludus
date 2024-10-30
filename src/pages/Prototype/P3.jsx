@@ -5,7 +5,6 @@ import authentication from './authentication';
 export default function P3() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    let authenticated = false;
 
     useEffect(() => {
         const form = document.getElementById('form');
@@ -14,8 +13,7 @@ export default function P3() {
             event.preventDefault(); // Impede o envio padrão do formulário
             setIsSubmitting(true); // Desabilita o botão
 
-            authenticated = authentication(setIsSubmitting); // Passa a função para lidar com o envio
-            console.log(authenticated);
+            authentication(setIsSubmitting); // Passa a função para lidar com o envio
         };
 
         form.addEventListener('submit', handleSubmit);

@@ -7,7 +7,7 @@ import "./Prototype.css"
 export default function Prototype(){
     return (
         <>
-            <Link></Link>
+            <Link to="/prototype"></Link>
             <P2/>
         </>
     );

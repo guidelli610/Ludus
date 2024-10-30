@@ -7,6 +7,7 @@ import Home from './pages/Home/Home.jsx';
 import Register from './pages/Register/Register.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
 import Prototype from './pages/Prototype/Prototype.jsx';
+import Prototype2 from './pages/Prototype/Prototype2.jsx';
 import About from './pages/About/About.jsx';
 
 const router = createBrowserRouter([
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/prototype2",
-        element: <Prototype2 />
+        element: <Prototype2/>
     }
 ]);
 

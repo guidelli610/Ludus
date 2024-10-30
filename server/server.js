@@ -3,6 +3,7 @@ dotenv.config();
 
 console.log('Current Working Directory:', process.cwd()); // Verifica o diretório atual
 console.log('JWT Secret:', process.env.JWT_SECRET);
+
 //Instanciamento do server
 import express from 'express';
 import cors from 'cors';
@@ -50,15 +51,12 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ error: err.message });
     }
 
-    
-    console.log("Resultados da consulta:", results);
-    console.log('JWT Secret:', process.env.JWT_SECRET);
-
     // Captura o retorno booleano da função
     const isAuthenticated = results[0]?.isAuthenticated === 1;
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-
+    console.log("Resultados da consulta:", results);
+    console.log('Token:', process.env.JWT_SECRET);
     console.log(isAuthenticated);
     // Verifica se o usuário está autenticado
     if (isAuthenticated) {

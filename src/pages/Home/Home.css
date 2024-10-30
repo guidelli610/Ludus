@@ -1,4 +1,30 @@
-.test {
-    background: linear-gradient(to right, #FAFAFF, black
-    );
+.home_container{
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
+
+.home_container{
+    flex:1;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home_image{
+    width: auto;
+    height: auto;
+    object-fit: cover;
+}
+
+.home_content{
+    flex: auto;
+    background-color: white; /* Fundo branco para o texto */
+    color: black;
+    padding: 2rem; /* Espaçamento interno para o conteúdo */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o texto verticalmente */
+    align-items: flex-start;
+}
+

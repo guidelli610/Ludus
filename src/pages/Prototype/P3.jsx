@@ -1,11 +1,11 @@
 // Prototype.jsx
 import { useEffect, useState } from 'react';
-import handleFormSubmit from './handleFormSubmit';
+import authentication from './authentication';
 
 export default function P3() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    let authenticated = false;
 
     useEffect(() => {
         const form = document.getElementById('form');
@@ -14,13 +14,14 @@ export default function P3() {
             event.preventDefault(); // Impede o envio padrão do formulário
             setIsSubmitting(true); // Desabilita o botão
 
-            handleFormSubmit(setIsSubmitting); // Passa a função para lidar com o envio
+            authenticated = authentication(setIsSubmitting); // Passa a função para lidar com o envio
+            console.log(authenticated);
         };
 
-        form.addEventListener('submit', handleSubmit)
+        form.addEventListener('submit', handleSubmit);
 
         return () => {
-            form.removeEventListener('submit', handleSubmit)
+            form.removeEventListener('submit', handleSubmit);
         }
     }, []);
 
@@ -30,20 +31,15 @@ export default function P3() {
                 <span className='p_title'>Enviar/Receber Dados</span>
                 
                 <form id="form" className='p_form'>
-                    <label htmlFor="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" required />
 
                     <label htmlFor="email">Email:</label>
                     <input type="text" id="email" name="email" required />
 
-                    <label htmlFor="idade">Data de nascimento:</label>
-                    <input type="date" id="date" name="date"/>
+                    <label htmlFor="password">Senha:</label>
+                    <input type="text" id="password" name="password" required />
 
-                    <label htmlFor="senha">Senha:</label>
-                    <input type="text" id="senha" name="senha" required />
-
-                    <label htmlFor="nome">Retorno: </label>
-                    <label htmlFor="nome">NULL</label>
+                    <label htmlFor="returner">Retorno: </label>
+                    <label htmlFor="returner" id="returner">NULL</label>
                     
                     <button type="submit" disabled={isSubmitting} className='p_button'>Enviar</button>
                 </form>

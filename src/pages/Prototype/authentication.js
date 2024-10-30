@@ -1,25 +1,27 @@
-export default function handleFormSubmit(setIsSubmitting) {
-    
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
+export default function authentication(setIsSubmitting) {
 
-    fetch('http://localhost:3000/register', {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    let returner = document.getElementById('returner').value;
+
+    fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nome, email, senha }),
+        body: JSON.stringify({ email, password })
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Erro: ${response.status} ${response.statusText}`);
+            throw new Error(`${response.status} ${response.statusText}`);
         }
         return response.json();
     })
     .then(data => {
         console.log("Data: ", data);
-        alert(`Usuário criado com sucesso! ID: ${data.id}`);
+        alert(`Acessado com sucesso!`);
+        returner = toString(data);
+        return data.authentication;
     })
     .catch((error) => {
         console.error('Erro:', error);

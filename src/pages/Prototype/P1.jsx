@@ -5,8 +5,7 @@ import handleFormSubmit from './handleFormSubmit';
 export default function P1() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-
+    
     useEffect(() => {
         const form = document.getElementById('form');
 

@@ -21,6 +21,17 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+
+let reqSave = null;
+let resSave = null;
+// Rota principal (GET)
+app.get('/status', (req, res) => {
+  res.send(
+    'Req: ' + reqSave +
+    ' | Res: ' + resSave
+  );
+});
+
 app.get('/sobre', (req, res) => {
   res.send('Página sobre');
 });
@@ -36,14 +47,34 @@ app.post('/register', (req, res) => {
   connection.query(sql, [nome, email, senha], (err, results) => {
     if (err) {
         console.error(err); // Log do erro
+        reqSave = res;
         return res.status(500).json({ error: err.message });
     }
     res.status(201).json({ id: results.insertId, nome, email, senha });
+    resSave = req;
   });
 });
 
-app.put('/users/:id', (req, res) => {
-  res.send(`Usuário ${req.params.id} atualizado`);
+// Rota para obter informações de um usuário específico
+app.get('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  const sql = 'SELECT connect(?, ?);'; // Consulta SQL
+  connection.query(sql, [email, password], (err, results) => {
+    if (err) {
+      console.error('Erro ao consultar o banco de dados:', err);
+      return res.status(500).json({ error: 'Erro ao consultar o banco de dados' });
+    }
+
+    // Verificando o resultado de autenticação
+    const isAuthenticated = results[0].authentication;
+
+    if (isAuthenticated) {
+      res.status(200).json({ authentication: true, message: 'Usuário autenticado com sucesso' });
+    } else {
+      res.status(401).json({ authentication: false, message: 'Credenciais inválidas' });
+    }
+  });
 });
 
 app.delete('/users/:id', (req, res) => {

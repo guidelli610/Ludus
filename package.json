@@ -8,12 +8,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "nodemon ./server_test/server_test.js"
+    "server": "nodemon ./server/server_test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "mysql2": "^3.11.3",
+    "nodemailer": "^6.9.16",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",

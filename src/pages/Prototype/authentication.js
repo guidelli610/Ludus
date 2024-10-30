@@ -17,15 +17,14 @@ export default function authentication(setIsSubmitting) {
         return response.json();
     })
     .then(data => {
-        if (data.token){
+        console.log("Data:", data);
+
+        if (data.authentication) {
             localStorage.setItem('token', data.token);
-            console.log('Token Encontrado!')
+            alert('Login bem sucedido!');
+        } else {
+            alert('Login falhou!');
         }
-        else
-        {
-            console.log(`Token não encontrado!`);
-        }
-        alert('Login bem sucedido!')
     })
     .catch((error) => {
         console.error('Erro:', error);

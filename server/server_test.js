@@ -1,7 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+console.log('Current Working Directory:', process.cwd()); // Verifica o diretório atual
+console.log('JWT Secret:', process.env.JWT_SECRET);
 //Instanciamento do server
-import express from 'express'
-import cors from 'cors'
-import connection from './db.js'
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import connection from './db.js';
 
 const app = express();
 app.use(cors());
@@ -21,15 +27,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/sobre', (req, res) => {
-  res.send('Página sobre');
-});
-
-app.get('/contato', (req, res) => {
-  res.send('Página de contato');
-});
-
-// Manipulação de Dados
+// Rota para cadastro
 app.post('/register', (req, res) => {
   const { nome, email, senha } = req.body;
   const sql = 'CALL create_player(?,?,?);';
@@ -41,7 +39,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Rota para obter informações de um usuário específico
+// Rota para login
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -52,23 +50,23 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ error: err.message });
     }
 
+    
     console.log("Resultados da consulta:", results);
+    console.log('JWT Secret:', process.env.JWT_SECRET);
 
     // Captura o retorno booleano da função
-    const isAuthenticated = results[0]?.isAuthenticated === 1; // Ajuste aqui
+    const isAuthenticated = results[0]?.isAuthenticated === 1;
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
 
     console.log(isAuthenticated);
     // Verifica se o usuário está autenticado
     if (isAuthenticated) {
-      res.status(200).json({ authentication: true, message: 'Usuário autenticado com sucesso' });
+      res.status(200).json({ authentication: true, token: token, message: 'Usuário autenticado com sucesso' });
     } else {
       res.status(401).json({ authentication: false, message: 'Credenciais inválidas' });
     }
   });
-});
-
-app.delete('/users/:id', (req, res) => {
-  res.send(`Usuário ${req.params.id} deletado`);
 });
 
 // Iniciar o servidor

@@ -21,9 +21,9 @@ export default function authentication(setIsSubmitting) {
 
         if (data.authentication) {
             localStorage.setItem('token', data.token);
-            alert('Login bem sucedido!');
+            alert(data.message);
         } else {
-            alert('Login falhou!');
+            alert(data.message);
         }
     })
     .catch((error) => {

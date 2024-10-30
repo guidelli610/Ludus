@@ -1,0 +1,30 @@
+export default function routeProtected (setIsSubmitting) {
+    // Obtém o token do localStorage (ou de onde ele estiver salvo)
+    console.log("Token sendo autenticado: ");
+    const token = localStorage.getItem('token');
+    console.log("Token sendo autenticado: ", token);
+
+    // Realiza a requisição com o cabeçalho Authorization
+    fetch('http://localhost:3000/rota-protegida', {
+        method: 'GET', // ou 'POST', 'PUT', etc., dependendo da sua rota
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Adiciona o token ao cabeçalho
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Falha na autenticação');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Resposta:", data);
+    })
+    .catch(error => {
+        console.error("Erro:", error.message);
+    })
+    .finally(() => {
+        setIsSubmitting(false); // Reabilita o botão após a conclusão da operação
+    });
+}

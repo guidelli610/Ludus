@@ -1,8 +1,8 @@
 // Prototype.jsx
 import { useEffect, useState } from 'react';
-import routeProtected from './routeProtected';
+import routeProtected from './routeProtected.js';
 
-export default function P2() {
+export default function Secure() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 

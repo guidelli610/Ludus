@@ -1,3 +1,4 @@
+//Teste da biblioteca nodemailer
 import nodemailer from 'nodemailer'
 
 // Configurar o transporte do Nodemailer

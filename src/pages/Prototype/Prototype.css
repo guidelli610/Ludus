@@ -23,6 +23,13 @@
     gap: 5px;
 }
 
+.p_links {
+    margin: 40px;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
 .p_button {
     margin-top: 35px;
 }
@@ -34,7 +41,24 @@
     font-weight: bold;
 }
 
-.p_link {
+.p_component {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.p_alert {
+    margin: 10px;
+}
+.p_alert-danger, .environmenttable .error {
+    color: #691911;
+    background-color: #f4d6d2;
+    border-color: #f0c5c1;
+}
+.p_alert {
     position: relative;
-    
+    padding: .4rem 1rem;
+    margin-bottom: .5rem;
+    border: 0 solid transparent;
+    border-radius: .3rem;
 }

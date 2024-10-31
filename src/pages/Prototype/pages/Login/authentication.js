@@ -1,4 +1,4 @@
-export default function authentication(setIsSubmitting) {
+export default function authentication(setIsSubmitting, setAlertMessage, setShowAlert) {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -12,25 +12,23 @@ export default function authentication(setIsSubmitting) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
+            return response.json().then(error => {
+                throw new Error(error.message); // Captura a mensagem de erro do servidor
+            });
         }
         return response.json();
     })
     .then(data => {
-        console.log("Data:", data);
-
         if (data.authentication) {
             localStorage.setItem('token', data.token);
-            alert(data.message);
-        } else {
-            alert(data.message);
         }
+        window.location.href = '/home';
     })
     .catch((error) => {
-        console.error('Erro:', error);
-        alert(`Ocorreu um erro ao criar o usuário.\n${error}`);
+        setAlertMessage(error.message); // Define a mensagem de erro
     })
     .finally(() => {
         setIsSubmitting(false); // Reabilita o botão após a conclusão da operação
+        setShowAlert(true); // Mostra o alerta
     });
 }

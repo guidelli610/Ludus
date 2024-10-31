@@ -13,17 +13,17 @@ export default function handleFormSubmit(setIsSubmitting) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
+            return response.json().then(error => {
+                throw new Error(error.message); // Captura a mensagem de erro do servidor
+            });
         }
         return response.json();
     })
     .then(data => {
-        console.log("Data: ", data);
-        alert(`Usuário criado com sucesso! ID: ${data.id}`);
+        alert(data.message);
     })
     .catch((error) => {
-        console.error(error);
-        alert(`Ocorreu um erro ao criar o usuário.\n${error}`);
+        alert(`Ocorreu um erro ao criar o usuário.\n${error.message}`);
     })
     .finally(() => {
         setIsSubmitting(false); // Reabilita o botão após a conclusão da operação

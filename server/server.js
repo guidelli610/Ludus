@@ -5,29 +5,73 @@ console.log('JWT Secret:', process.env.JWT_SECRET);
 
 //Instanciamento das bibliotecas, frameworks e API server
 import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import connection from './db.js';
 
+// -------------------------------------------------[Configuração]--------------------------------------------------- //
+
 const app = express(); // Instanciamento do server
-const port = 3000; // Porta
+const server = http.createServer(app); // Cria o servidor HTTP com Express
 
-app.use(cors());
+const PORT = process.env.PORT || 3000; // Porta
 
-// Middleware para analisar JSON
-app.use(express.json());
+// Configuração do CORS para o Express
+app.use(
+  cors({
+  origin: 'http://localhost:5173', // Permitir a origem do seu frontend
+  methods: ['GET', 'POST'], // Métodos permitidos
+  credentials: true, // Permite envio de cookies de autenticação
+  })
+);
+
+app.use(express.json());// Middleware para analisar JSON
+
+// Configuração do Socket.IO com CORS
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5173', // Permitir o frontend
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
+// -------------------------------------------------[Socket.io]--------------------------------------------------- //
+
+
+let connectedUsers = {}; // Objeto para armazenar os usuários conectados
+
+io.on('connection', (socket) => {
+  console.log('Cliente conectado com ID:', socket.id);
+  connectedUsers[socket.id] = { id: socket.id };
+  console.log('Total de usuários: ', connectedUsers)
+
+  // O cliente agora está conectado, e você pode escutar eventos desse cliente
+  socket.on('mensagem', (data) => {
+    console.log('Mensagem recebida:', data);
+    // Retransmitindo a mensagem para todos os clientes conectados
+    io.emit('mensagem', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado com ID:', socket.id);
+    delete connectedUsers[socket.id]; // Remove o usuário da lista
+  });
+})
 
 // -------------------------------------------------[Ativadores]--------------------------------------------------- //
+
+// Iniciar o servidor
+server.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
 
 // Middleware de log
 app.use((req, res, next) => {
   console.log(`\nTentativa de ${req.url.split('/')[1]}...`);
   next();
-});
-
-// Iniciar o servidor
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
 });
 
 // -------------------------------------------------[Autenticação]--------------------------------------------------- //
@@ -67,7 +111,7 @@ app.use('/secure', authenticateToken);
 
 // Rota principal (GET)
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Servidor rodando com Express e Socket.IO');
 });
 
 // Uso do middleware em uma rota protegida

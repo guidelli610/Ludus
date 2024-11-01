@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@connect': resolve(__dirname, 'server/connect')
+      '@connect': resolve(__dirname, 'server/connect'),
+      '@components': resolve(__dirname, 'src/components')
     }
   },
 })

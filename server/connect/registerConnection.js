@@ -1,14 +1,15 @@
-export default function authentication(setIsSubmitting, setAlertMessage, setShowAlert) {
-
+export default function registerConnection(setIsSubmitting) {
+    
+    const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const senha = document.getElementById('senha').value;
 
-    fetch('http://localhost:3000/login', {
+    fetch('http://localhost:3000/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ nome, email, senha }),
     })
     .then(response => {
         if (!response.ok) {
@@ -19,16 +20,12 @@ export default function authentication(setIsSubmitting, setAlertMessage, setShow
         return response.json();
     })
     .then(data => {
-        if (data.authentication) {
-            localStorage.setItem('token', data.token);
-        }
-        window.location.href = '/home';
+        alert(data.message);
     })
     .catch((error) => {
-        setAlertMessage(error.message); // Define a mensagem de erro
+        alert(`Ocorreu um erro ao criar o usuário.\n${error.message}`);
     })
     .finally(() => {
         setIsSubmitting(false); // Reabilita o botão após a conclusão da operação
-        setShowAlert(true); // Mostra o alerta
     });
 }

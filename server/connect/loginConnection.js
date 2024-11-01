@@ -1,17 +1,17 @@
-export default function handleFormSubmit(setIsSubmitting) {
-    
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
+export default function loginConnection(setIsSubmitting, setAlertMessage, setShowAlert) {
 
-    fetch('http://localhost:3000/register', {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nome, email, senha }),
+        body: JSON.stringify({ email, password })
     })
     .then(response => {
+        
         if (!response.ok) {
             return response.json().then(error => {
                 throw new Error(error.message); // Captura a mensagem de erro do servidor
@@ -20,10 +20,12 @@ export default function handleFormSubmit(setIsSubmitting) {
         return response.json();
     })
     .then(data => {
-        alert(data.message);
+        localStorage.setItem('token', data.token);
+        window.location.href = '/prototype1';
     })
     .catch((error) => {
-        alert(`Ocorreu um erro ao criar o usuário.\n${error.message}`);
+        setAlertMessage(error.message); // Define a mensagem de erro
+        setShowAlert(true); // Mostra o alerta
     })
     .finally(() => {
         setIsSubmitting(false); // Reabilita o botão após a conclusão da operação

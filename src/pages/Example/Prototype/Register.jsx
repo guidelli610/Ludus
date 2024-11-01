@@ -1,10 +1,14 @@
 // Prototype.jsx
 import { useEffect, useState } from 'react';
-import handleFormSubmit from './handleFormSubmit';
+import registerConnection from '@connect/registerConnection';
 
 export default function Register() {
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    // ----------------------------------[Ativação do Register]------------------------------------- //
+
+    // consideração da importação -> import registerConnection from '@connect/registerConnection';
+
+    const [isSubmitting, setIsSubmitting] = useState(false); // Desativação do ativador para evitar envios duplicados
     
     useEffect(() => {
         const form = document.getElementById('form');
@@ -13,15 +17,19 @@ export default function Register() {
             event.preventDefault(); // Impede o envio padrão do formulário
             setIsSubmitting(true); // Desabilita o botão
 
-            handleFormSubmit(setIsSubmitting); // Passa a função para lidar com o envio
+            registerConnection(setIsSubmitting); // Passa a função para lidar com o envio
         };
 
-        form.addEventListener('submit', handleSubmit)
+        form.addEventListener('submit', handleSubmit) // Considera um evento para ativação
+
+        // elemento exemplar -> <button type="submit" disabled={isSubmitting} className='p_button'>Enviar</button>
 
         return () => {
             form.removeEventListener('submit', handleSubmit)
         }
     }, []);
+
+    // --------------------------------------------------------------------------------------------- //
 
     return (
         <>
@@ -34,9 +42,6 @@ export default function Register() {
 
                     <label htmlFor="email">Email:</label>
                     <input type="text" id="email" name="email" required />
-
-                    <label htmlFor="idade">Data de nascimento:</label>
-                    <input type="date" id="date" name="date"/>
 
                     <label htmlFor="senha">Senha:</label>
                     <input type="text" id="senha" name="senha" required />

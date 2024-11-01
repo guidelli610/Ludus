@@ -1,6 +1,6 @@
 // Prototype.jsx
 import { useEffect, useState, useNavigate } from 'react';
-import authentication from './authentication.js';
+import loginConnection from '@connect/loginConnection';
 
 export default function Login() {
 
@@ -19,7 +19,7 @@ export default function Login() {
             event.preventDefault(); // Impede a página regarregar
             setIsSubmitting(true); // Desabilita o botão
 
-            authentication(setIsSubmitting, setAlertMessage, setShowAlert); // Passa a função para lidar com o envio
+            loginConnection(setIsSubmitting, setAlertMessage, setShowAlert); // Passa a função para lidar com o envio
         };
 
         form.addEventListener('submit', handleSubmit);

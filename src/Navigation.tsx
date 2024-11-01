@@ -6,9 +6,7 @@ import Login from './pages/Login/Login.tsx';
 import Home from './pages/Home/Home.jsx';
 import Register from './pages/Register/Register.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
-import Prototype1 from './pages/Prototype/Prototype1.jsx';
-import Prototype2 from './pages/Prototype/Prototype2.jsx';
-import Prototype3 from './pages/Prototype/Prototype3.jsx';
+import Prototype from './pages/Prototype/Prototype.jsx';
 import About from './pages/About/About.jsx';
 
 const router = createBrowserRouter([
@@ -37,16 +35,8 @@ const router = createBrowserRouter([
         element: <NotFound />
     },
     {
-        path: "/prototype1",
-        element: <Prototype1 />
-    },
-    {
-        path: "/prototype2",
-        element: <Prototype2/>
-    },
-    {
-        path: "/prototype3",
-        element: <Prototype3/>
+        path: "/prototype",
+        element: <Prototype />
     }
 ]);
 

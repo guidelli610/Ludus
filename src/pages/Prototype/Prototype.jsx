@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Login from "./pages/Login/Login";
 import "./Prototype.css"
 
 export default function Prototype(){
@@ -10,7 +9,10 @@ export default function Prototype(){
                 <Link to="/prototype2" className="p_link">Login</Link>
                 <Link to="/prototype3" className="p_link">Acesso</Link>
             </div>
-            <Login/>
+            <div className="p_component">
+                <Register/>
+            </div>
         </>
+        
     );
 }

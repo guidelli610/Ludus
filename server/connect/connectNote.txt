@@ -1,0 +1,5 @@
+/*
+
+Para verificação da utilização vá em Examples
+
+*/

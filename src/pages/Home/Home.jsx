@@ -1,8 +1,6 @@
     import './Home.css';
     import Menu from '@components/Menu';
 
-    console.log("connect");
-
     export default function HomeLateralLogo() {
         return (
             <div className="home_container">

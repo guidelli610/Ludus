@@ -57,7 +57,7 @@
     flex: 1;
 }
 
-.message {
+.messages {
     display: flex;
     gap: 10px;
     flex-direction: column;
@@ -108,9 +108,49 @@
 
 .scroll-container {
     display: flex;
-    overflow-x: auto; /* Habilita a rolagem horizontal */
-    white-space: nowrap; /* Impede que os itens quebrem para a linha seguinte */
-    max-width: 100%; /* Defina o tamanho máximo desejado */
-    padding: 10px;
-    gap: 10px; /* Espaçamento entre os itens */
+    flex: auto;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 580px;
+    border-radius: 0.5rem;
+    gap: 5px;
+
+    /* Barra de Rolagem - WebKit (Chrome, Safari, Edge) */
+    &::-webkit-scrollbar {
+        width: 8px;            /* Largura da barra de rolagem */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;    /* Cor de fundo da trilha */
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #888;       /* Cor da barra de rolagem */
+        border-radius: 4px;   /* Borda arredondada para a barra */
+    }
+}
+
+.container-message {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px; /* Espaçamento entre as mensagens */
+}
+
+.message {
+    max-width: 70%; /* Limita a largura das mensagens */
+    padding: 10px 15px;
+    border-radius: 15px;
+}
+
+.you {
+    background-color: #e1ffc7;
+    margin-left: auto; /* Alinha à direita */
+    justify-self: flex-end;
+}
+
+.other {
+    background-color: #c7d4ff;
+    margin-right: auto; /* Alinha à esquerda */
+    justify-self: flex-start;
 }

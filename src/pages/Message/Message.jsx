@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import useAutoScroll from "./useAutoScroll"
 import "./Message.css";
 
 export default function Prototype() {
@@ -9,6 +10,8 @@ export default function Prototype() {
 
     const [message, setMessage] = useState('');
     const [messagesList, setMessagesList] = useState([]); // Estado para armazenar mensagens recebidas
+    const [senderList, setSenderList] = useState([]);
+    const endRef = useAutoScroll([messagesList]); // Hook de scroll automático
     const socketRef = useRef(null); // Usamos uma ref para o socket
 
 
@@ -25,9 +28,9 @@ export default function Prototype() {
             socketRef.current.on("mensagem", (data) => {
                 console.log("Mensagem do servidor:", data);
                 setMessagesList((prevMessages) => [...prevMessages, data]);
-                setIsSubmitting(false);
+                setSenderList((prevSender) => [...prevSender, 'other']);
             });
-        }, 1000);
+        }, 500);
 
         // Função de limpeza: desconecta o socket ao desmontar o componente
         return () => {
@@ -38,13 +41,15 @@ export default function Prototype() {
         };
     }, []);
 
+    
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
         if (message.trim()) {
             socketRef.current.emit("mensagem", message); // Usa o socketRef para emitir a mensagem
             setMessagesList((prevMessages) => [...prevMessages, message]);
+            setSenderList((prevSender) => [...prevSender, 'you']);
             setMessage("");
         }
     };
@@ -63,17 +68,19 @@ export default function Prototype() {
                             <span>Teste</span>
                         </div>
                         <div className="chat"  style={{flex: 8}}>
-                            <div className="message">
-                                <h2>Mensagens</h2>
-                                <ul>
+                            <div className="messages">
+                                <div className="scroll-container">
                                     {messagesList.map((msg, index) => (
-                                        <li key={index}>{msg}</li> // Renderiza a lista de mensagens
+                                        <div className="container-message">
+                                            <div key={index} className={`message ${senderList[index]}`}>{msg} ({senderList[index]})</div>
+                                        </div>
                                     ))}
-                                </ul>
+                                    <div ref={endRef}/>
+                                </div>
                             </div>
                             
                             <form onSubmit={handleSubmit} className="call">
-                                <input 
+                                <input
                                     type="text" 
                                     value={message} 
                                     onChange={(e) => setMessage(e.target.value)} 

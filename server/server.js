@@ -43,28 +43,29 @@ const io = new Server(server, {
 
 // -------------------------------------------------[Socket.io]--------------------------------------------------- //
 
-
 let connectedUsers = {}; // Objeto para armazenar os usuários conectados
 
 io.on('connection', (socket) => {
   console.log('Cliente conectado com ID:', socket.id);
   connectedUsers[socket.id] = { id: socket.id };
-  console.log('Total de usuários: ', connectedUsers)
-
-  socket.emit('mensagem', socket.id);
+  console.log('Total de usuários: ', connectedUsers);
 
   // O cliente agora está conectado, e você pode escutar eventos desse cliente
   socket.on('mensagem', (data) => {
     console.log('Mensagem recebida:', data);
     // Retransmitindo a mensagem para todos os clientes conectados
-    io.emit('mensagem', data);
+    Object.values(connectedUsers).forEach((user) => {
+      if (socket.id != user.id){
+        io.to(user.id).emit('mensagem', data);
+      }
+    });
   });
 
   socket.on('disconnect', () => {
     console.log('Cliente desconectado com ID:', socket.id);
     delete connectedUsers[socket.id]; // Remove o usuário da lista
   });
-})
+});
 
 // -------------------------------------------------[Ativadores]--------------------------------------------------- //
 

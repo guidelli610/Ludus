@@ -41,8 +41,6 @@ export default function Prototype() {
         };
     }, []);
 
-    
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -58,12 +56,12 @@ export default function Prototype() {
         <>
             <div className="all">
                 <div className="dad">
-                    <div className="links" style={{flex: 1}}>
-                        <Link to="/prototype1" className="p_link">Registrar</Link>
-                        <Link to="/prototype2" className="p_link">Login</Link>
-                        <Link to="/prototype3" className="p_link">Acesso</Link>
+                    <div className="links" style={{flex: 2}}>
+                        <Link to="/home">
+                            <div className="quadrado"><img src="./icon/icon.png"/></div>
+                        </Link>
                     </div>
-                    <div className="rows" style={{flex: 10}}>
+                    <div className="rows" style={{flex: 16}}>
                         <div className="contact" style={{flex: 2}}>
                             <span>Teste</span>
                         </div>

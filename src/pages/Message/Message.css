@@ -29,8 +29,7 @@
     padding-left: 20px;
     flex-direction: row;
     align-items: center;
-    border-bottom: 2px solid black;
-    background-color: rgb(85, 85, 85);
+    background-color: rgb(71, 71, 71);
     flex: 1;
 }
 
@@ -38,8 +37,6 @@
     display: flex;
     gap: 10px;
     background-color: rgb(30, 30, 30);
-    border-right: 2px solid black;
-    border-top: 2px solid black;
     padding: 10px;
     flex-direction: column;
     flex: 1;
@@ -49,9 +46,11 @@
     display: flex;
     gap: 10px;
     flex-direction: column;
-    background-color:aliceblue;
-    border-left: 2px solid black;
-    border-top: 2px solid black;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)), /* Degradê escuro */
+        url("./assets/background_chat.jpg"); /* Imagem de fundo */
+    background-size: 700px;
+    border-top-left-radius: 10px;
     padding: 10px;
     color: black;
     flex: 1;
@@ -92,9 +91,9 @@
 .input {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-size: 18px;
-    background-color: white; /* Fundo branco */
+    background-color: rgba(255, 255, 255, 0.3); /* Fundo branco */
     color: black; /* Texto preto */
-    border: 2px solid gray; /* Borda cinza */
+    border: 2px solid black; /* Borda cinza */
     padding: 10px; /* Espaçamento interno */
     border-radius: 5px; /* Bordas arredondadas */
     width: 100%; /* Ocupa todo o espaço disponível */
@@ -102,7 +101,7 @@
 }
 
 .input:focus {
-    border-color: black; /* Borda preta quando focado */
+    border-color: gray; /* Borda preta quando focado */
     outline: none; /* Remove a borda padrão de foco */
 }
 
@@ -153,4 +152,47 @@
     background-color: #c7d4ff;
     margin-right: auto; /* Alinha à esquerda */
     justify-self: flex-start;
+}
+
+.quadrado {
+    position: relative; /* Necessário para o posicionamento do pseudo-elemento */
+    z-index: 1; /* Garante que o elemento esteja acima do losângulo */
+    width: 50px; /* Largura do elemento */
+    height: 50px; /* Altura do elemento */
+    /*background-color: rgba(0, 0, 0, 0.5);  Cor de fundo do elemento */
+    color: white; /* Cor do texto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px; /* Tamanho da fonte */
+}
+
+.quadrado::before {
+    content: ""; /* Necessário para criar o pseudo-elemento */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%; /* A largura do losângulo */
+    height: 100%; /* A altura do losângulo */
+    background-color: white; /* Cor do losângulo */
+    transform: translate(-50%, -50%) rotate(45deg); /* Centraliza e rotaciona o losângulo */
+    z-index: -1; /* Coloca o losângulo atrás do elemento */
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.quadrado img {
+    width: 30px;
+    max-width: 35px;
+    animation: pulse 2s infinite;
+    opacity: 1; /* Opacidade inicial */
+    transition: opacity 0.5s ease; /* Transição suave para opacidade e escala */
+}
+  
+.quadrado:hover {
+    opacity: 0.7; /* Quando o cursor passa sobre a imagem, ela se torna semitransparente */
 }

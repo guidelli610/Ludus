@@ -1,0 +1,9 @@
+.menu-overlay {
+    position: absolute; /* Posiciona o menu sobre a imagem */
+    top: 20px; /* Ajuste conforme a posição desejada */
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+    color: white;
+    padding: 10px;
+    z-index: 10;
+}

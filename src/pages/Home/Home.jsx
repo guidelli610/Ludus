@@ -1,15 +1,20 @@
-import './Home.css';
-export default function HomeLateralLogo() {
-    return (
-        <div className="home_container">
-            <div className="home_image"> {/*separador para a img*/}
-                <img src="./assetsHome/hotbar_back.jpg" alt="Logo ludus" />
+    import './Home.css';
+    import Menu from '@components/Menu';
+
+    console.log("connect");
+
+    export default function HomeLateralLogo() {
+        return (
+            <div className="home_container">
+                <div className="home_image">
+                    <img src="./assetsHome/hotbar_back.jpg" alt="Logo ludus" />
+                    <Menu/>
+                </div>
+                <div className="home_content">
+                    <h1>LUDUS</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque molestias impedit odio laudantium adipisci recusandae vitae quod nostrum veritatis, earum temporibus laborum aut autem possimus animi culpa deleniti magni libero.</p>
+                </div>
             </div>
-            <div className="home_content">{/*conteudo lateral*/}
-                <h1>LUDUS</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque molestias impedit odio laudantium adipisci recusandae vitae quod nostrum veritatis, earum temporibus laborum aut autem possimus animi culpa deleniti magni libero.</p>
-            </div>
-        </div>
-    );
-}
-       
+        );
+    }
+        

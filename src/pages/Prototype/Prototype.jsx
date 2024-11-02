@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { io } from 'socket.io-client'; 
+import { io } from "socket.io-client";
 import "./Prototype.css";
 
-const socket = io('http://localhost:3000');
+const socket = io("http://localhost:3000");
 
 export default function Prototype() {
 
@@ -14,22 +14,23 @@ export default function Prototype() {
     const [messagesList, setMessagesList] = useState([]); // Estado para armazenar mensagens recebidas
 
     useEffect(() => {
+        setTimeout(()=>{
+            console.log('Conectando...', socket.id);
+            socket.on('connect', () => {
+                console.log('Conectado ao servidor:', socket.id);
+            });
+            socket.on('mensagem', (data) => {
+                console.log('Mensagem do servidor:', data);
+                setMessagesList(prevMessages => [...prevMessages, data]); // Adiciona nova mensagem à lista
+                setIsSubmitting(false);
+            });
 
-        console.log('Conectando...');
-        socket.on('connect', () => {
-            console.log('Conectado ao servidor:', socket.id);
-        });
-
-        socket.on('mensagem', (data) => {
-            console.log('Mensagem do servidor:', data);
-            setMessagesList(prevMessages => [...prevMessages, data]); // Adiciona nova mensagem à lista
-            setIsSubmitting(false);
-        });
-
-        return () => {
-            socket.off('mensagem');
-            socket.disconnect();
-        };
+            return () => {
+                console.log('Desconectando...');
+                socket.off('mensagem');
+                socket.disconnect();
+            };
+        }, 1000);
     }, []);
 
     const handleSubmit = (e) => {

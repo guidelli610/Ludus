@@ -19,6 +19,11 @@
 .home_image img {
     position: absolute;
     width: 600px;
+    z-index: 0;
+}
+
+.home_menu {
+    position: static;
     z-index: 1;
 }
 

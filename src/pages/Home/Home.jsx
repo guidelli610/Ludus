@@ -8,7 +8,7 @@
             <div className="home_container">
                 <div className="home_image">
                     <img src="./assetsHome/hotbar_back.jpg" alt="Logo ludus" />
-                    <Menu/>
+                    <div className='home_menu'><Menu/></div>
                 </div>
                 <div className="home_content">
                     <h1>LUDUS</h1>

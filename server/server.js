@@ -36,6 +36,9 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
     credentials: true,
   },
+  reconnection: true, // habilita a reconexão automática
+  reconnectionAttempts: 10, // define o número de tentativas antes de desistir
+  reconnectionDelay: 1000, // tempo de espera entre tentativas de reconexão em ms
 });
 
 // -------------------------------------------------[Socket.io]--------------------------------------------------- //
@@ -47,6 +50,8 @@ io.on('connection', (socket) => {
   console.log('Cliente conectado com ID:', socket.id);
   connectedUsers[socket.id] = { id: socket.id };
   console.log('Total de usuários: ', connectedUsers)
+
+  socket.emit('mensagem', socket.id);
 
   // O cliente agora está conectado, e você pode escutar eventos desse cliente
   socket.on('mensagem', (data) => {

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import registerConnection from '@connect/registerConnection';
 import Header from "@components/Header";
+import "@components/form.css";
 
 export default function Register() {
 

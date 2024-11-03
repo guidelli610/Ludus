@@ -35,7 +35,7 @@ export default function Prototype() {
             socketRef.current.on("mensagem", (data) => {
                 console.log("Mensagem do servidor:", data);
                 setMessagesList((prevMessages) => [...prevMessages, data]);
-                setSenderList((prevSender) => [...prevSender, 'other']);
+                setSenderList((prevSender) => [...prevSender, 'message-other']);
             });
 
             socketRef.current.on("reconnect_attempt", (attempt) => {
@@ -63,7 +63,7 @@ export default function Prototype() {
         if (message.trim()) {
             socketRef.current.emit("mensagem", message); // Usa o socketRef para emitir a mensagem
             setMessagesList((prevMessages) => [...prevMessages, message]);
-            setSenderList((prevSender) => [...prevSender, 'you']);
+            setSenderList((prevSender) => [...prevSender, 'message-you']);
             setMessage("");
         }
     };
@@ -75,30 +75,30 @@ export default function Prototype() {
                     <Header/>
                 </div>
                 <div className="main columns">
-                    <div className="contact" style={{flex: 2}}>
+                    <div className="message-contact" style={{flex: 2}}>
                         <span>Teste</span>
                     </div>
-                    <div className="chat"  style={{flex: 8}}>
-                        <div className="messages">
-                            <div className="scroll-container">
+                    <div className="message-chat"  style={{flex: 8}}>
+                        <div className="message-messages">
+                            <div className="message-scroll-container">
                                 {messagesList.map((msg, index) => (
-                                    <div className="container-message">
-                                        <div key={index} className={`message ${senderList[index]}`}>{msg} ({senderList[index]})</div>
+                                    <div className="message-container">
+                                        <div key={index} className={`message-message ${senderList[index]}`}>{msg} ({senderList[index]})</div>
                                     </div>
                                 ))}
                                 <div ref={endRef}/>
                             </div>
                         </div>
                         
-                        <form onSubmit={handleSubmit} className="call">
+                        <form onSubmit={handleSubmit} className="message-call">
                             <input
                                 type="text" 
                                 value={message} 
                                 onChange={(e) => setMessage(e.target.value)} 
                                 placeholder="Digite sua mensagem" 
-                                className="input"
+                                className="message-input"
                             />
-                            <button type="submit" disabled={isSubmitting} className="submit">Enviar</button>
+                            <button type="submit" disabled={isSubmitting} className="message-submit">Enviar</button>
                         </form>
                     </div>
                 </div>

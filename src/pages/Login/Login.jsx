@@ -1,7 +1,7 @@
 // Prototype.jsx
 import { useEffect, useState, useNavigate } from 'react';
 import loginConnection from '@connect/loginConnection';
-import "./Login.css";
+import "@components/form.css";
 import Header from "@components/Header";
 
 export default function Login() {

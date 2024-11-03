@@ -1,5 +1,5 @@
 
-.contact {
+.message-contact {
     display: flex;
     gap: 10px;
     background-color: rgb(30, 30, 30);
@@ -8,7 +8,7 @@
     flex: 1;
 }
 
-.chat {
+.message-chat {
     display: flex;
     gap: 10px;
     flex-direction: column;
@@ -22,14 +22,14 @@
     flex: 1;
 }
 
-.messages {
+.message-messages {
     display: flex;
     gap: 10px;
     flex-direction: column;
     flex: 13;
 }
 
-.call {
+.message-call {
     display: flex;
     gap: 10px;
     flex-direction: row;
@@ -38,7 +38,7 @@
 }
 
 /* Estilo do botão */
-.submit {
+.message-submit {
     background-color: black; /* Cor de fundo preta */
     color: white; /* Texto branco */
     border: 2px solid gray; /* Borda cinza */
@@ -48,13 +48,13 @@
     transition: background-color 0.3s ease; /* Transição suave para hover */
 }
 
-.submit:hover {
+.message-submit:hover {
     background-color: gray; /* Fica cinza ao passar o mouse */
     color: black; /* Texto preto no hover */
 }
 
 /* Estilo do input */
-.input {
+.message-input {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-size: 18px;
     background-color: rgba(255, 255, 255, 0.3); /* Fundo branco */
@@ -66,12 +66,12 @@
     box-sizing: border-box; /* Inclui padding e border na largura */
 }
 
-.input:focus {
+.message-input:focus {
     border-color: gray; /* Borda preta quando focado */
     outline: none; /* Remove a borda padrão de foco */
 }
 
-.scroll-container {
+.message-scroll-container {
     display: flex;
     flex: auto;
     flex-direction: column;
@@ -96,25 +96,25 @@
     }
 }
 
-.container-message {
+.message-container {
     display: flex;
     flex-direction: row;
     margin-bottom: 10px; /* Espaçamento entre as mensagens */
 }
 
-.message {
+.message-message {
     max-width: 70%; /* Limita a largura das mensagens */
     padding: 10px 15px;
     border-radius: 15px;
 }
 
-.you {
+.message-you {
     background-color: #e1ffc7;
     margin-left: auto; /* Alinha à direita */
     justify-self: flex-end;
 }
 
-.other {
+.message-other {
     background-color: #c7d4ff;
     margin-right: auto; /* Alinha à esquerda */
     justify-self: flex-start;

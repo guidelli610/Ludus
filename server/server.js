@@ -147,6 +147,27 @@ app.post('/register', (req, res) => {
 
 // -------------------------------------------------[Finalizados]--------------------------------------------------- //
 
+const getUserByName = async (email) => {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT nome FROM jogadores WHERE email = ?';
+    connection.query(sql, [email], (err, results) => {
+      if (err) {
+        console.error("Erro ao acessar o banco:", err.message);
+        return reject(new Error('Erro ao acessar o banco.'));
+      }
+
+      if (results.length === 0) {
+        console.log("Usuário não encontrado.");
+        return resolve(null); // Retorna null se o usuário não for encontrado
+      }
+
+      // Retorna o nome do usuário
+      console.log(results[0].nome);
+      resolve(results[0].nome);
+    });
+  });
+};
+
 // Rota para login
 app.post('/login', (req, res) => {
 
@@ -174,18 +195,23 @@ app.post('/login', (req, res) => {
     if (isAuthenticated) {
       try {
         const token = jwt.sign({ email, timestamp: Date.now() }, process.env.JWT_SECRET, { expiresIn: '1m' });
-        res.status(200).json({ token: token, message: 'Usuário autenticado com sucesso!' });
+        const name = getUserByName(email);
+        console.log("nome: ", name);
+        res.status(200).json({ token: token, message: 'Usuário autenticado com sucesso!', name: name});
         console.log("Token criado: ", token);
       } 
       catch (tokenError) {
 
         console.error("Erro ao gerar o token!");
-        res.status(500).json({ message: 'Erro ao gerar o token!' });
+        return res.status(500).json({ message: 'Erro ao gerar o token!' });
       }
     } 
     else {
       console.error("Email ou senha incorretos!");
-      res.status(401).json({ message: 'Email ou senha incorretos!' });
+      return res.status(401).json({ message: 'Email ou senha incorretos!' });
     }
   });
 });
+
+// -------------------------------------------------[Release]--------------------------------------------------- //
+

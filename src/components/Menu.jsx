@@ -7,7 +7,5 @@ return(
             <Link to="/Login" className="">Login</Link>
             <Link to="/Acesso" className="">Acesso</Link>
         </div>
-
-
     )
 }

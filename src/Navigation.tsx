@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 //import App from './App.jsx';
-import Login from './pages/Login/Login.tsx';
+import Login from './pages/Login/Login.jsx';
 import Home from './pages/Home/Home.jsx';
 import Register from './pages/Register/Register.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';

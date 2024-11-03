@@ -157,8 +157,8 @@
 .quadrado {
     position: relative; /* Necessário para o posicionamento do pseudo-elemento */
     z-index: 1; /* Garante que o elemento esteja acima do losângulo */
-    width: 50px; /* Largura do elemento */
-    height: 50px; /* Altura do elemento */
+    width: 45px; /* Largura do elemento */
+    height: 45px; /* Altura do elemento */
     /*background-color: rgba(0, 0, 0, 0.5);  Cor de fundo do elemento */
     color: white; /* Cor do texto */
     display: flex;
@@ -186,7 +186,7 @@
 }
 
 .quadrado img {
-    width: 25px;
+    width: 20px;
     max-width: 35px;
     animation: pulse 2s infinite;
     opacity: 1; /* Opacidade inicial */

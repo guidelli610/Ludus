@@ -11,12 +11,19 @@ export default function Prototype() {
     const [message, setMessage] = useState('');
     const [messagesList, setMessagesList] = useState([]); // Estado para armazenar mensagens recebidas
     const [senderList, setSenderList] = useState([]);
+    
     const endRef = useAutoScroll([messagesList]); // Hook de scroll automático
     const socketRef = useRef(null); // Usamos uma ref para o socket
 
 
     useEffect(() => {
-        socketRef.current = io("http://localhost:3000"); // Inicializa o socket e o armazena na ref
+        socketRef.current = io("http://localhost:3000", {
+            reconnection: true, // Habilita a reconexão automática
+            reconnectionAttempts: 5, // Número máximo de tentativas de reconexão
+            reconnectionDelay: 1000, // Tempo (em ms) antes de tentar reconectar (1 segundo)
+            reconnectionDelayMax: 5000, // Tempo máximo (em ms) para as tentativas de reconexão (5 segundos)
+            timeout: 20000 // Tempo de espera para conexão inicial (20 segundos)
+        });
 
         const connectTimeout = setTimeout(() => {
             console.log("Conectando...");
@@ -29,6 +36,15 @@ export default function Prototype() {
                 console.log("Mensagem do servidor:", data);
                 setMessagesList((prevMessages) => [...prevMessages, data]);
                 setSenderList((prevSender) => [...prevSender, 'other']);
+            });
+
+            socketRef.current.on("reconnect_attempt", (attempt) => {
+                console.log(`Tentativa de reconexão #${attempt}`);
+            });
+            
+            socketRef.current.on("reconnect_failed", () => {
+                console.log("Falha ao reconectar. Atualizando a página...");
+                location.reload(); // Recarrega a página para forçar nova conexão
             });
         }, 500);
 

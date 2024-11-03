@@ -20,8 +20,9 @@ export default function loginConnection(setIsSubmitting, setAlertMessage, setSho
         return response.json();
     })
     .then(data => {
+        console.log("Data: ", data);
         localStorage.setItem('token', data.token);
-        window.location.href = '/prototype1';
+        //window.location.href = '/prototype1';
     })
     .catch((error) => {
         setAlertMessage(error.message); // Define a mensagem de erro

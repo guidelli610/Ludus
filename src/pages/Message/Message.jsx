@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import Header from "@components/Header";
 import useAutoScroll from "./useAutoScroll"
 import "./Message.css";
 
@@ -70,40 +70,36 @@ export default function Prototype() {
 
     return (
         <>
-            <div className="all">
-                <div className="dad">
-                    <div className="links" style={{flex: 2}}>
-                        <Link to="/home">
-                            <div className="quadrado"><img src="./icon/icon.png"/></div>
-                        </Link>
+            <div className="all rows">
+                <div className="header">
+                    <Header/>
+                </div>
+                <div className="main columns">
+                    <div className="contact" style={{flex: 2}}>
+                        <span>Teste</span>
                     </div>
-                    <div className="rows" style={{flex: 16}}>
-                        <div className="contact" style={{flex: 2}}>
-                            <span>Teste</span>
-                        </div>
-                        <div className="chat"  style={{flex: 8}}>
-                            <div className="messages">
-                                <div className="scroll-container">
-                                    {messagesList.map((msg, index) => (
-                                        <div className="container-message">
-                                            <div key={index} className={`message ${senderList[index]}`}>{msg} ({senderList[index]})</div>
-                                        </div>
-                                    ))}
-                                    <div ref={endRef}/>
-                                </div>
+                    <div className="chat"  style={{flex: 8}}>
+                        <div className="messages">
+                            <div className="scroll-container">
+                                {messagesList.map((msg, index) => (
+                                    <div className="container-message">
+                                        <div key={index} className={`message ${senderList[index]}`}>{msg} ({senderList[index]})</div>
+                                    </div>
+                                ))}
+                                <div ref={endRef}/>
                             </div>
-                            
-                            <form onSubmit={handleSubmit} className="call">
-                                <input
-                                    type="text" 
-                                    value={message} 
-                                    onChange={(e) => setMessage(e.target.value)} 
-                                    placeholder="Digite sua mensagem" 
-                                    className="input"
-                                />
-                                <button type="submit" disabled={isSubmitting} className="submit">Enviar</button>
-                            </form>
                         </div>
+                        
+                        <form onSubmit={handleSubmit} className="call">
+                            <input
+                                type="text" 
+                                value={message} 
+                                onChange={(e) => setMessage(e.target.value)} 
+                                placeholder="Digite sua mensagem" 
+                                className="input"
+                            />
+                            <button type="submit" disabled={isSubmitting} className="submit">Enviar</button>
+                        </form>
                     </div>
                 </div>
             </div>

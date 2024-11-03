@@ -1,16 +1,4 @@
 
-.header {
-    display: flex;
-    flex: 1;
-}
-
-.center {
-    display: flex;
-    flex: 10;
-    justify-content: center;
-    align-items: center;
-}
-
 .p_inner {
     margin-left: auto;
     margin-right: auto;

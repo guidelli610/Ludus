@@ -1,38 +1,4 @@
 
-.all {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-.columns {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.rows {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-}
-
-.dad {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.links {
-    display: flex;
-    gap: 20px;
-    padding-left: 20px;
-    flex-direction: row;
-    align-items: center;
-    background-color: rgb(71, 71, 71);
-    flex: 1;
-}
-
 .contact {
     display: flex;
     gap: 10px;
@@ -48,7 +14,7 @@
     flex-direction: column;
     background-image: 
         linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)), /* Degradê escuro */
-        url("./assets/background_chat.jpg"); /* Imagem de fundo */
+        url("/public/background/background_chat.jpg"); /* Imagem de fundo */
     background-size: 700px;
     border-top-left-radius: 10px;
     padding: 10px;
@@ -152,48 +118,4 @@
     background-color: #c7d4ff;
     margin-right: auto; /* Alinha à esquerda */
     justify-self: flex-start;
-}
-
-.quadrado {
-    position: relative; /* Necessário para o posicionamento do pseudo-elemento */
-    z-index: 1; /* Garante que o elemento esteja acima do losângulo */
-    width: 45px; /* Largura do elemento */
-    height: 45px; /* Altura do elemento */
-    /*background-color: rgba(0, 0, 0, 0.5);  Cor de fundo do elemento */
-    color: white; /* Cor do texto */
-    display: flex;
-    align-items:flex-end;
-    justify-content: center;
-    font-size: 24px; /* Tamanho da fonte */
-}
-
-.quadrado::before {
-    content: ""; /* Necessário para criar o pseudo-elemento */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%; /* A largura do losângulo */
-    height: 100%; /* A altura do losângulo */
-    background-color: white; /* Cor do losângulo */
-    transform: translate(-50%, -50%) rotate(45deg); /* Centraliza e rotaciona o losângulo */
-    z-index: -1; /* Coloca o losângulo atrás do elemento */
-}
-
-@keyframes pulse {
-    0% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.05); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-.quadrado img {
-    width: 20px;
-    max-width: 35px;
-    animation: pulse 2s infinite;
-    opacity: 1; /* Opacidade inicial */
-    transition: opacity 0.5s ease; /* Transição suave para opacidade e escala */
-    padding-bottom: 3px;
-}
-  
-.quadrado:hover {
-    opacity: 0.7; /* Quando o cursor passa sobre a imagem, ela se torna semitransparente */
 }

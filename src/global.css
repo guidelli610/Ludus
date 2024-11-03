@@ -1,56 +1,49 @@
 
 :root {
+  --primary-color:#e5e5e5;
+  --secondary-color:#1C1C1C;
+  --tertiary-color: #7f7ba0;
+  --quaternary-color: #1a1a1a;
+  --quintenary-color: rgb(71, 71, 71);
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.core {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: #ECEBE4;
-  background-color: #1C1C1C;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  flex: 1;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--primary-color);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--tertiary-color);
 }
 
 body {
   display: flex;
   margin: 0;
-  min-width: 100vw;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+h1 { font-size: 3.2em; line-height: 1.2; }
+h2 { font-size: 2.4em; line-height: 1.2; }
+h3 { font-size: 2.0em; line-height: 1.1; }
+h4 { font-size: 1.6em; line-height: 1.1; }
+h5 { font-size: 1.4em; line-height: 1; }
+h6 { font-size: 1.2em; line-height: 1; }
 
 button {
   border-radius: 8px;
@@ -59,12 +52,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--quaternary-color);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--tertiary-color);
 }
 button:focus,
 button:focus-visible {
@@ -73,13 +66,71 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --primary-color:#1C1C1C;
+    --secondary-color:#e5e5e5;
+    --tertiary-color: #7f7ba0;
+    --quaternary-color: #717171;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+}
+
+
+/*Core*/
+.core {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+/*Espalha em toda tela*/
+.all {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+/*Separa um flex em linhas*/
+.rows {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/*Separa um flex em colunas*/
+.columns {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+/*Centraliza conteúdo*/
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+/*Defini hotbar*/
+.header {
+  display: flex;
+  flex: 2;
+}
+
+/*Defini conteúdo*/
+.main {
+  display: flex;
+  flex: 14;
+}
+
+/*Organização dos links*/
+.links {
+  display: flex;
+  gap: 70px;
+  padding-left: 20px;
+  flex-direction: row;
+  align-items: center;
+  background-color: --quintenary-color;
+  flex: 1;
 }

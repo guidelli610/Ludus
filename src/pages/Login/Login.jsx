@@ -1,8 +1,8 @@
 // Prototype.jsx
 import { useEffect, useState, useNavigate } from 'react';
 import loginConnection from '@connect/loginConnection';
-import Header from '@components/Header';
 import "./Login.css";
+import Header from "@components/Header";
 
 export default function Login() {
 
@@ -34,11 +34,11 @@ export default function Login() {
     return (
         <>
             <div className='all'>
-                <div className='columns'>
+                <div className='rows'>
                     <div className='header'>
                         <Header/>
                     </div>
-                    <div className='center'>
+                    <div className='main center'>
                         <div className='p_inner'>
                             <span className='p_title'>Enviar/Receber Dados</span>
                             

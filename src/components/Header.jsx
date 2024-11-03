@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
+import Icon from "./Icon";
 
-export default function Menu(){
+export default function Header(){
 return(
         <div className="links">
-            <Link to="/Home" className="">Home</Link>
+            <Icon/>
             <Link to="/Login" className="">Login</Link>
             <Link to="/Register" className="">Registrar</Link>
             <Link to="/Message" className="">Mensagem</Link>
-            <Link to="/Sobre" className="">Sobre</Link>
+            <Link to="/About" className="">Sobre</Link>
         </div>
     )
 }

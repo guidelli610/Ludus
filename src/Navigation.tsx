@@ -8,6 +8,7 @@ import Register from './pages/Register/Register.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
 import Message from './pages/Message/Message.jsx';
 import About from './pages/About/About.jsx';
+import Style from './pages/Style/Style.jsx';
 
 const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/message",
         element: <Message />
+    },
+    {
+        path: "/style",
+        element: <Style />
     }
 ]);
 

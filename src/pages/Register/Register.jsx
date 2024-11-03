@@ -1,7 +1,7 @@
 // Prototype.jsx
 import { useEffect, useState } from 'react';
 import registerConnection from '@connect/registerConnection';
-import Header from '@components/Header';
+import Header from "@components/Header";
 
 export default function Register() {
 
@@ -35,11 +35,11 @@ export default function Register() {
     return (
         <>
             <div className='all'>
-                <div className='columns'>
+                <div className='rows'>
                     <div className='header'>
                         <Header/>
                     </div>
-                    <div className='center'>
+                    <div className='main center'>
                         <div className='p_inner'>
                             <span className='p_title'>Enviar Dados</span>
                             

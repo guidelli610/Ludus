@@ -42,17 +42,17 @@ export default function Register() {
                     </div>
                     <div className='main center'>
                         <div className='p_inner'>
-                            <span className='p_title'>Enviar Dados</span>
+                            <span className='p_title'>Cadastro</span>
                             
                             <form id="form" className='p_form'>
-                                <label htmlFor="nome">Nome:</label>
-                                <input type="text" id="nome" name="nome" required />
+                                <label htmlFor="name">Nome:</label>
+                                <input type="text" id="name" name="name" required />
 
                                 <label htmlFor="email">Email:</label>
                                 <input type="text" id="email" name="email" required />
 
-                                <label htmlFor="senha">Senha:</label>
-                                <input type="text" id="senha" name="senha" required />
+                                <label htmlFor="password">Senha:</label>
+                                <input type="text" id="password" name="password" required />
                                 
                                 <button type="submit" disabled={isSubmitting} className='p_button'>Enviar</button>
                             </form>

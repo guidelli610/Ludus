@@ -1,8 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import Header from "@components/Header";
+import secure from "@connect/secure";
+import Loading from "@pages/Loading/Loading";
 import useAutoScroll from "./useAutoScroll"
 import "./Message.css";
+
 
 export default function Prototype() {
 
@@ -14,7 +17,6 @@ export default function Prototype() {
     
     const endRef = useAutoScroll([messagesList]); // Hook de scroll automático
     const socketRef = useRef(null); // Usamos uma ref para o socket
-
 
     useEffect(() => {
         socketRef.current = io("http://localhost:3000", {
@@ -67,6 +69,9 @@ export default function Prototype() {
             setMessage("");
         }
     };
+
+
+    if (secure('home')) { return <Loading/> } // Acesso com pedido deautenticação
 
     return (
         <>

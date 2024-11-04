@@ -22,6 +22,7 @@ export default function loginConnection(setIsSubmitting, setAlertMessage, setSho
     .then(data => {
         console.log("Data: ", data);
         localStorage.setItem('token', data.token);
+        localStorage.setItem('name', data.name);
         //window.location.href = '/prototype1';
     })
     .catch((error) => {

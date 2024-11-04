@@ -130,47 +130,37 @@ app.get('/secure', (req, res) => {
 // Rota para cadastro
 app.post('/register', (req, res) => {
 
-  const { nome, email, senha } = req.body;
+  const { name, email, password } = req.body;
 
-  const sql = 'CALL create_player(?,?,?);';
+  const sql = 'CALL create_user(?,?,?);';
 
-  connection.query(sql, [nome, email, senha], (err, results) => {
+  connection.query(sql, [name, email, password], (err, results) => {
     if (err) {
       console.error(err.message)
         return res.status(500).json({ message: err.message });
     }
-    console.log(`Usuário ${nome} criado com sucesso!`)
-    res.status(201).json({ nome, email, senha, message: "Usuário criado com sucesso!"});
+    console.log(`Usuário ${name} criado com sucesso!`)
+    res.status(201).json({ name, email, password, message: "Usuário criado com sucesso!"});
   });
 });
 
 
 // -------------------------------------------------[Finalizados]--------------------------------------------------- //
 
-const getUserByName = async (email) => {
+// Função auxiliar para fazer uma consulta SQL que retorna uma Promise
+const query = (sql, params) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT nome FROM jogadores WHERE email = ?';
-    connection.query(sql, [email], (err, results) => {
+    connection.query(sql, params, (err, results) => {
       if (err) {
-        console.error("Erro ao acessar o banco:", err.message);
-        return reject(new Error('Erro ao acessar o banco.'));
+        return reject(err);
       }
-
-      if (results.length === 0) {
-        console.log("Usuário não encontrado.");
-        return resolve(null); // Retorna null se o usuário não for encontrado
-      }
-
-      // Retorna o nome do usuário
-      console.log(results[0].nome);
-      resolve(results[0].nome);
+      resolve(results);
     });
   });
 };
 
 // Rota para login
-app.post('/login', (req, res) => {
-
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   // Validação de entrada
@@ -179,39 +169,37 @@ app.post('/login', (req, res) => {
     return res.status(400).json({ message: 'Email e senha são obrigatórios!' });
   }
 
-  const sql = 'SELECT connect(?, ?) AS isAuthenticated;'; // Consulta SQL
-  connection.query(sql, [email, password], (err, results) => {
-
-    // Erro do banco de dados
-    if (err) {
-      console.error(err.message);
-      return res.status(500).json({ message: err.message });
-    }
+  try {
+    // Consulta de autenticação
+    const sqlAuth = 'SELECT connect(?, ?) AS isAuthenticated;';
+    const authResults = await query(sqlAuth, [email, password]);
 
     // Captura o retorno booleano da função
-    const isAuthenticated = results[0]?.isAuthenticated === 1;
+    const isAuthenticated = authResults[0]?.isAuthenticated === 1;
 
-    // Verifica se o usuário está autenticado
     if (isAuthenticated) {
-      try {
-        const token = jwt.sign({ email, timestamp: Date.now() }, process.env.JWT_SECRET, { expiresIn: '1m' });
-        const name = getUserByName(email);
-        console.log("nome: ", name);
-        res.status(200).json({ token: token, message: 'Usuário autenticado com sucesso!', name: name});
-        console.log("Token criado: ", token);
-      } 
-      catch (tokenError) {
+      // Criação do token JWT
+      const token = jwt.sign({ email, timestamp: Date.now() }, process.env.JWT_SECRET, { expiresIn: '1m' });
 
-        console.error("Erro ao gerar o token!");
-        return res.status(500).json({ message: 'Erro ao gerar o token!' });
-      }
-    } 
-    else {
+      // Obtém o name do usuário
+      const sqlGetName = 'SELECT name FROM users WHERE email = ?';
+      const nameResults = await query(sqlGetName, [email]);
+
+      // Verifica se o name foi encontrado
+      const name = nameResults.length > 0 ? nameResults[0].name : null;
+
+      res.status(200).json({ token: token, name: name, message: 'Usuário autenticado com sucesso!'});
+      console.log("Token criado:", token);
+    } else {
       console.error("Email ou senha incorretos!");
       return res.status(401).json({ message: 'Email ou senha incorretos!' });
     }
-  });
+  } catch (error) {
+    console.error("Erro no processo de login:", error.message);
+    return res.status(500).json({ message: 'Erro no processo de login.' });
+  }
 });
+
 
 // -------------------------------------------------[Release]--------------------------------------------------- //
 

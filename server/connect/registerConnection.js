@@ -1,15 +1,15 @@
 export default function registerConnection(setIsSubmitting) {
     
-    const nome = document.getElementById('nome').value;
+    const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
+    const password = document.getElementById('password').value;
 
     fetch('http://localhost:3000/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nome, email, senha }),
+        body: JSON.stringify({ name, email, password }),
     })
     .then(response => {
         if (!response.ok) {

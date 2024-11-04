@@ -8,7 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@connect': resolve(__dirname, 'server/connect'),
-      '@components': resolve(__dirname, 'src/components')
+      '@components': resolve(__dirname, 'src/components'),
+      '@pages': resolve(__dirname, 'src/pages')
     }
   },
 })

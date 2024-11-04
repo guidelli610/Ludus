@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound/NotFound.jsx';
 import Message from './pages/Message/Message.jsx';
 import About from './pages/About/About.jsx';
 import Style from './pages/Style/Style.jsx';
+import Match from './pages/Match/Match.tsx';
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
     {
         path: "/style",
         element: <Style />
+    }, 
+    {
+        path: "/match",
+        element: <Match />
     }
 ]);
 

@@ -1,4 +1,3 @@
-// Prototype.jsx
 import { useEffect, useState } from 'react';
 import secureConnection from './secureConnection.js';
 

@@ -34,7 +34,7 @@ export default function Prototype() {
                 console.log("Conectado ao servidor:", socketRef.current.id);
             });
 
-            socketRef.current.on("mensagem", (data) => {
+            socketRef.current.on("message", (data) => {
                 console.log("Mensagem do servidor:", data);
                 setMessagesList((prevMessages) => [...prevMessages, data]);
                 setSenderList((prevSender) => [...prevSender, 'message-other']);
@@ -63,7 +63,7 @@ export default function Prototype() {
         e.preventDefault();
 
         if (message.trim()) {
-            socketRef.current.emit("mensagem", message); // Usa o socketRef para emitir a mensagem
+            socketRef.current.emit("message", message); // Usa o socketRef para emitir a mensagem
             setMessagesList((prevMessages) => [...prevMessages, message]);
             setSenderList((prevSender) => [...prevSender, 'message-you']);
             setMessage("");

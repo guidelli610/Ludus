@@ -43,27 +43,24 @@ const io = new Server(server, {
 
 // -------------------------------------------------[Socket.io]--------------------------------------------------- //
 
-let connectedUsers = {}; // Objeto para armazenar os usuários conectados
+let users = {}; // Objeto para armazenar os usuários conectados
+const sala = "sala123";
 
 io.on('connection', (socket) => {
+  socket.join(sala);
   console.log('Cliente conectado com ID:', socket.id);
-  connectedUsers[socket.id] = { id: socket.id };
-  console.log('Total de usuários: ', connectedUsers);
+  users[socket.id] = { id: socket.id };
+  console.log('Total de usuários: ', users);
 
   // O cliente agora está conectado, e você pode escutar eventos desse cliente
-  socket.on('mensagem', (data) => {
+  socket.on('message', (data) => {
     console.log('Mensagem recebida:', data);
-    // Retransmitindo a mensagem para todos os clientes conectados
-    Object.values(connectedUsers).forEach((user) => {
-      if (socket.id != user.id){
-        io.to(user.id).emit('mensagem', data);
-      }
-    });
+    socket.to(sala).emit('message',data);
   });
 
   socket.on('disconnect', () => {
     console.log('Cliente desconectado com ID:', socket.id);
-    delete connectedUsers[socket.id]; // Remove o usuário da lista
+    delete users[socket.id]; // Remove o usuário da lista
   });
 });
 
@@ -127,6 +124,9 @@ app.get('/secure', (req, res) => {
 
 // -------------------------------------------------[Rotas]--------------------------------------------------- //
 
+
+// -------------------------------------------------[Finalizados]--------------------------------------------------- //
+
 // Rota para cadastro
 app.post('/register', (req, res) => {
 
@@ -143,9 +143,6 @@ app.post('/register', (req, res) => {
     res.status(201).json({ name, email, password, message: "Usuário criado com sucesso!"});
   });
 });
-
-
-// -------------------------------------------------[Finalizados]--------------------------------------------------- //
 
 // Função auxiliar para fazer uma consulta SQL que retorna uma Promise
 const query = (sql, params) => {

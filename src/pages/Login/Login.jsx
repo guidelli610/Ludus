@@ -40,8 +40,7 @@ export default function Login() {
                     </div>
                     <div className='main center'>
                         <div className='p_inner'>
-                            <span className='p_title'>Login</span>
-                            
+                            <span className='p_title'>Enviar/Receber Dados</span>                            
                             <form id="form" className='p_form'>
 
                                 {showAlert && (

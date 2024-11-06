@@ -45,6 +45,10 @@ export default function Register() {
                             <span className='p_title'>Cadastro</span>
                             
                             <form id="form" className='p_form'>
+                                
+                                <label htmlFor="identity">Identificador:</label>
+                                <input type="text" id="identity" name="identity" required />
+
                                 <label htmlFor="name">Nome:</label>
                                 <input type="text" id="name" name="name" required />
 

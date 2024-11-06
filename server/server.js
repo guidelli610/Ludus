@@ -44,25 +44,75 @@ const io = new Server(server, {
 // -------------------------------------------------[Socket.io]--------------------------------------------------- //
 
 let users = {}; // Objeto para armazenar os usuários conectados
-const sala = "sala123";
 
 io.on('connection', (socket) => {
-  socket.join(sala);
   console.log('Cliente conectado com ID:', socket.id);
   users[socket.id] = { id: socket.id };
   console.log('Total de usuários: ', users);
 
+  const doesRoomExist = (roomName) => {
+    return io.sockets.adapter.rooms.has(roomName);
+  }
+
+  const selectRoomName = (identity, target) => {
+    if (!target || !identity) return null; // Verificação para garantir que o target é válido
+    let roomName;
+    if (target === "room_global") {
+      roomName = `room_global`;
+    } else {
+      roomName = `room_${identity}_${target}`;
+      const roomTest = `room_${target}_${identity}`;
+      if (doesRoomExist(roomTest)) {
+        roomName = roomTest;
+      }
+    }
+    return roomName;
+  }
+
+  // Criar e entrar em uma sala quando um usuário quiser
+  // type = tipo da sala ou identificador do propósito
+  // identity = você
+  // target = alvo
+  socket.on('joinRoom', (identity, target, setCurrentRoom) => {
+    const roomName = selectRoomName(identity, target);
+    setCurrentRoom(`${roomName}`);
+    if (roomName && !socket.rooms.has(roomName)) {
+      socket.join(roomName);
+      console.log(`${identity} entrou na sala: ${roomName}`);
+      socket.emit('message', identity, `Você entrou na sala: ${roomName}`);
+      socket.to(roomName).emit('message', identity, `${identity} entrou na sala!`, roomName);
+    }
+  });
+
+
+  // Sai de uma sala quando um usuário quiser
+  // type = tipo da sala ou identificador do propósito
+  // identity = você
+  // target = alvo
+  // setCurrentRoom <- função de salvamento de nome
+  socket.on('leaveRoom', (identity, target) => {
+    const roomName = selectRoomName(target);
+    if (roomName && socket.rooms.has(roomName)) {
+      socket.leave(roomName);
+      console.log(`${identity} saiu da sala: ${roomName}`);
+      socket.emit('message', identity, `Você saiu da sala: ${roomName}`);
+      socket.to(roomName).emit('message', identity, `${identity} saiu da sala!`, roomName);
+    }
+  });
+
   // O cliente agora está conectado, e você pode escutar eventos desse cliente
-  socket.on('message', (data) => {
-    console.log('Mensagem recebida:', data);
-    socket.to(sala).emit('message',data);
+  socket.on('message', (identity, message, room) => {
+    console.log(`Mensagem recebida de ${identity} na sala ${room}: `, message);
+    socket.to(room).emit('message', identity, message, room);
   });
 
   socket.on('disconnect', () => {
     console.log('Cliente desconectado com ID:', socket.id);
+    socket.leaveAll(); // Remove o usuário de todas as salas ao desconectar
     delete users[socket.id]; // Remove o usuário da lista
   });
 });
+
 
 // -------------------------------------------------[Ativadores]--------------------------------------------------- //
 
@@ -130,17 +180,17 @@ app.get('/secure', (req, res) => {
 // Rota para cadastro
 app.post('/register', (req, res) => {
 
-  const { name, email, password } = req.body;
+  const { identity, name, email, password } = req.body;
 
-  const sql = 'CALL create_user(?,?,?);';
+  const sql = 'CALL create_user(?,?,?,?);';
 
-  connection.query(sql, [name, email, password], (err, results) => {
+  connection.query(sql, [identity, name, email, password], (err, results) => {
     if (err) {
       console.error(err.message)
         return res.status(500).json({ message: err.message });
     }
     console.log(`Usuário ${name} criado com sucesso!`)
-    res.status(201).json({ name, email, password, message: "Usuário criado com sucesso!"});
+    res.status(201).json({ message: "Usuário criado com sucesso!" });
   });
 });
 
@@ -179,13 +229,13 @@ app.post('/login', async (req, res) => {
       const token = jwt.sign({ email, timestamp: Date.now() }, process.env.JWT_SECRET, { expiresIn: '1m' });
 
       // Obtém o name do usuário
-      const sqlGetName = 'SELECT name FROM users WHERE email = ?';
-      const nameResults = await query(sqlGetName, [email]);
+      const sqlGetIdentityAndName = 'SELECT identity, name FROM users WHERE email = ?';
+      const results = await query(sqlGetIdentityAndName, [email]);
+      const data = results.length > 0 ? results[0] : null;// Verifica se o name foi encontrado
+      const identity = data.identity;
+      const name = data.name;
 
-      // Verifica se o name foi encontrado
-      const name = nameResults.length > 0 ? nameResults[0].name : null;
-
-      res.status(200).json({ token: token, name: name, message: 'Usuário autenticado com sucesso!'});
+      res.status(200).json({ token: token, identity: identity, name: name, email: email, message: 'Usuário autenticado com sucesso!'});
       console.log("Token criado:", token);
     } else {
       console.error("Email ou senha incorretos!");

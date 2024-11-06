@@ -119,3 +119,8 @@
     margin-right: auto; /* Alinha à esquerda */
     justify-self: flex-start;
 }
+
+.message-button {
+    height: 70px;
+    width: 300px;   
+}

@@ -1,5 +1,6 @@
 export default function registerConnection(setIsSubmitting) {
     
+    const identity = document.getElementById('identity').value;
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -9,7 +10,7 @@ export default function registerConnection(setIsSubmitting) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ identity, name, email, password }),
     })
     .then(response => {
         if (!response.ok) {
@@ -21,6 +22,7 @@ export default function registerConnection(setIsSubmitting) {
     })
     .then(data => {
         alert(data.message);
+        window.location.href = '/login';
     })
     .catch((error) => {
         alert(`Ocorreu um erro ao criar o usuário.\n${error.message}`);

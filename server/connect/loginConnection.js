@@ -23,6 +23,7 @@ export default function loginConnection(setIsSubmitting, setAlertMessage, setSho
         console.log("Data: ", data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('name', data.name);
+        localStorage.setItem('identity', data.identity);
         //window.location.href = '/prototype1';
     })
     .catch((error) => {

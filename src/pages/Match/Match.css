@@ -1,0 +1,68 @@
+
+.match-background1 {
+    background-color: rgb(26, 26, 26);
+}
+
+.match-background2 {
+    background-color: rgb(40, 40, 40); 
+}
+
+.match-titles{
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1;
+    font-weight: 600;
+    font-size: 2em;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.match-border {
+    border-radius: 10px; /* Define cantos arredondados */
+    background-color: rgb(57, 57, 57); /* Define a cor de fundo do elemento */
+    border: 2px solid rgb(137, 137, 137); /* Define a largura da borda e cor (usando apenas a propriedade 'border') */
+    margin: 10px; /* Define o espaçamento externo ao redor do elemento */
+}
+
+.match-call {
+    display: flex;
+    gap: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    flex-direction: l;
+    flex: 1;
+}
+
+.match-submit {
+    background-color: black; /* Cor de fundo preta */
+    color: white; /* Texto branco */
+    border: 2px solid gray; /* Borda cinza */
+    padding: 10px 20px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+}
+
+.match-submit:hover {
+    background-color: gray; /* Fica cinza ao passar o mouse */
+    color: black; /* Texto preto no hover */
+}
+
+/* Estilo do input */
+.match-input {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.3); /* Fundo branco */
+    color: black; /* Texto preto */
+    border: 2px solid black; /* Borda cinza */
+    padding: 10px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    width: 100%; /* Ocupa todo o espaço disponível */
+    box-sizing: border-box; /* Inclui padding e border na largura */
+}
+
+.match-input:focus {
+    border-color: gray; /* Borda preta quando focado */
+    outline: none; /* Remove a borda padrão de foco */
+}

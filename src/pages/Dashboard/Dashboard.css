@@ -1,0 +1,31 @@
+.leftOffset {
+    margin: 20px 5%;
+}
+
+.fullDash {
+    max-width: 600px;
+    display: flex;
+    flex: 1;
+    padding: 0;
+}
+
+.dashButtons {
+    width: 100%;
+    max-height: 75px;
+    display: flex;
+    flex: 1;
+}
+
+.dashButton {
+    width: 100%;
+    border-radius: 0px;
+    background-color: #000;
+}
+
+.selected {
+    border-bottom: #fff 5px solid;
+}
+
+.gameDisplay {
+    width: 100%;
+}

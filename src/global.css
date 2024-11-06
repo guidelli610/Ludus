@@ -116,6 +116,7 @@ button:focus-visible {
 .header {
   display: flex;
   flex: 2;
+  max-height: 80px;
 }
 
 /*Defini conteúdo*/

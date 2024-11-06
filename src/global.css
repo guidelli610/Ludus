@@ -5,6 +5,7 @@
   --tertiary-color: #7f7ba0;
   --quaternary-color: #1a1a1a;
   --quintenary-color: #000;
+  --trasparent-color: rgba(0, 0, 0, 0.170);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -126,11 +127,14 @@ button:focus-visible {
 
 /*Organização dos links*/
 .links {
+  width: calc(100vw - 20px);
+  height: 100px;
+  position: absolute;
   display: flex;
-  gap: 70px;
+  gap: 50px;
   padding-left: 20px;
-  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
-  background-color: var(--quintenary-color);
-  flex: 1;
-}
+  background-color: var(--trasparent-color);
+  z-index: 999;
+} 

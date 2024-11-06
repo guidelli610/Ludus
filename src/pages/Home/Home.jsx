@@ -1,4 +1,4 @@
-import Header from '@components/Header';
+import Header from '../../components/Header';
 import './Home.css';
 import Menu from '@components/Menu';
 
@@ -6,9 +6,9 @@ export default function HomeLateralLogo() {
     return (
         <div className='rows'>
             <div className='header'>
-                <Header/>
+                <Header />
             </div>
-            <div className="home_container main">
+            <div className="home_container">
                 <div className="home_image">
                     <img src="./assetsHome/hotbar_back.jpg" alt="Logo ludus" />
                     <div className='home_menu'></div>

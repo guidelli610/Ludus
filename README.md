@@ -18,6 +18,7 @@ npm install react-router-dom
 npm install socket.io
 npm install socket.io-client
 npm install concurrently --save-dev
+npm install chess
 
 ## Links:
 Site: https://ludus-mu.vercel.app/

@@ -1,7 +1,8 @@
 export default class ChatManager {
     constructor() {
-      // { name: "", room: "", messagesList: [], sendersList: [], dateList: [] }
-      const chatsList = JSON.parse(localStorage.getItem("chatsList")) || [{ room: "room_global", messagesList: [], sendersList: [] }];
+      // { type: "", target: "", messagesList: [], sendersList: [], dateList: [] }
+      localStorage.setItem("chatsList", JSON.stringify(null));
+      const chatsList = JSON.parse(localStorage.getItem("chatsList")) || [];
       this.chatsList = chatsList;
     }
   
@@ -10,8 +11,8 @@ export default class ChatManager {
       console.log("Salvando: ", this.chatsList);
     }
   
-    addChatRoom(room) {
-      this.chatsList.push({ room, messagesList: [], sendersList: [] });
+    addChatRoom(type, target) {
+      this.chatsList.push({ type: type, target: target, messagesList: [], sendersList: [] });
       this.save();
     }
   

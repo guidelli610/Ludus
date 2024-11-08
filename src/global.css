@@ -116,8 +116,7 @@ button:focus-visible {
 /*Defini hotbar*/
 .header {
   display: flex;
-  flex: 2;
-  max-height: 80px;
+  height: 100px;
 }
 
 /*Defini conteúdo*/
@@ -130,7 +129,6 @@ button:focus-visible {
 .links {
   width: calc(100vw - 20px);
   height: 100px;
-  position: absolute;
   display: flex;
   gap: 50px;
   padding-left: 20px;

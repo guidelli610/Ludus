@@ -43,25 +43,61 @@ const io = new Server(server, {
 
 // -------------------------------------------------[Socket.io]--------------------------------------------------- //
 
+/*
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (!token) {
+    return next(new Error("Token de autenticação não fornecido"));
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return next(new Error("Token inválido ou expirado"));
+    }
+    socket.user = decoded; // Armazena as informações decodificadas do token
+    next();
+  });
+});
+
+//CLIENTE
+const socket = io("http://localhost:3000", {
+  auth: {
+    token: userToken // Envia o token obtido durante o login
+  }
+});
+*/
+
+
 let users = {}; // Objeto para armazenar os usuários conectados
 
 io.on('connection', (socket) => {
+  // Inicializa a propriedade currentRoom e identity como null
+  socket.currentRoom = null;
+  socket.identity = null;
+
   console.log('Cliente conectado com ID:', socket.id);
-  users[socket.id] = { id: socket.id };
-  console.log('Total de usuários: ', users);
+
+  // Define o `identity` quando o cliente fornece esse dado
+  socket.on('setIdentity', (identity) => {
+    socket.identity = identity; // Salva o `identity` diretamente no socket
+    users[socket.id] = { id: socket.id, identity: identity };
+    console.log(`Usuário definido como ${identity} com ID: ${socket.id}`);
+    console.log('Total de usuários: ', users);
+  });
 
   const doesRoomExist = (roomName) => {
     return io.sockets.adapter.rooms.has(roomName);
   }
 
-  const selectRoomName = (identity, target) => {
-    if (!target || !identity) return null; // Verificação para garantir que o target é válido
+  const selectRoomName = (type, target) => {
+    if (!target || !socket.identity) return null; // Verificação para garantir que o target é válido
     let roomName;
-    if (target === "room_global") {
+    if (target === "global") {
       roomName = `room_global`;
     } else {
-      roomName = `room_${identity}_${target}`;
-      const roomTest = `room_${target}_${identity}`;
+      roomName = `room_${type}_${socket.identity}_${target}`;
+      const roomTest = `room_${type}_${target}_${socket.identity}`;
       if (doesRoomExist(roomTest)) {
         roomName = roomTest;
       }
@@ -70,48 +106,56 @@ io.on('connection', (socket) => {
   }
 
   // Criar e entrar em uma sala quando um usuário quiser
-  // type = tipo da sala ou identificador do propósito
-  // identity = você
-  // target = alvo
-  socket.on('joinRoom', (identity, target, setCurrentRoom) => {
-    const roomName = selectRoomName(identity, target);
-    setCurrentRoom(`${roomName}`);
-    if (roomName && !socket.rooms.has(roomName)) {
-      socket.join(roomName);
-      console.log(`${identity} entrou na sala: ${roomName}`);
-      socket.emit('message', identity, `Você entrou na sala: ${roomName}`);
-      socket.to(roomName).emit('message', identity, `${identity} entrou na sala!`, roomName);
+  socket.on('joinRoom', (type, target) => {
+    socket.currentRoom = selectRoomName(type, target);
+    if (socket.currentRoom && !socket.rooms.has(socket.currentRoom)) {
+      socket.join(socket.currentRoom);
+      console.log(`${socket.identity} entrou na sala: ${socket.currentRoom}`);
+      socket.emit('message', socket.identity, `Você entrou na sala: ${socket.currentRoom}`);
+      socket.to(socket.currentRoom).emit('message', socket.identity, `${socket.identity} entrou na sala!`);
     }
   });
-
 
   // Sai de uma sala quando um usuário quiser
-  // type = tipo da sala ou identificador do propósito
-  // identity = você
-  // target = alvo
-  // setCurrentRoom <- função de salvamento de nome
-  socket.on('leaveRoom', (identity, target) => {
-    const roomName = selectRoomName(target);
+  socket.on('leaveRoom', (type, target) => {
+    const roomName = selectRoomName(type, target);
+    
     if (roomName && socket.rooms.has(roomName)) {
       socket.leave(roomName);
-      console.log(`${identity} saiu da sala: ${roomName}`);
-      socket.emit('message', identity, `Você saiu da sala: ${roomName}`);
-      socket.to(roomName).emit('message', identity, `${identity} saiu da sala!`, roomName);
+      console.log(`${socket.identity} saiu da sala: ${roomName}`);
+      socket.emit('message', socket.identity, `Você saiu da sala: ${roomName}`);
+      socket.to(roomName).emit('message', socket.identity, `${socket.identity} saiu da sala!`);
+
+      // Limpa `currentRoom` se a sala que saiu era a atual
+      if (socket.currentRoom === roomName) {
+        socket.currentRoom = null;
+      }
     }
   });
 
-  // O cliente agora está conectado, e você pode escutar eventos desse cliente
-  socket.on('message', (identity, message, room) => {
-    console.log(`Mensagem recebida de ${identity} na sala ${room}: `, message);
-    socket.to(room).emit('message', identity, message, room);
+  // Envio de mensagens
+  socket.on('message', (message) => {
+    console.log(`Mensagem recebida de ${socket.identity} na sala ${socket.currentRoom}: `, message);
+    
+    // Verifica se o socket está na sala antes de retransmitir a mensagem
+    if (socket.rooms.has(socket.currentRoom)) {
+      socket.emit('message', socket.identity, message);
+      socket.to(socket.currentRoom).emit('message', socket.identity, message);
+    } else {
+      console.log(`Cliente ${socket.id} tentou enviar uma mensagem para uma sala em que não está: ${socket.currentRoom}`);
+    }
   });
 
+  // Desconexão
   socket.on('disconnect', () => {
     console.log('Cliente desconectado com ID:', socket.id);
-    socket.leaveAll(); // Remove o usuário de todas as salas ao desconectar
+    socket.leaveAll(); // Sai de todas as salas ao desconectar
     delete users[socket.id]; // Remove o usuário da lista
+    console.log('Total de usuários após desconexão: ', users);
   });
 });
+
+
 
 
 // -------------------------------------------------[Ativadores]--------------------------------------------------- //

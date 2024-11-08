@@ -5,7 +5,7 @@ import Menu from '@components/Menu';
 export default function HomeLateralLogo() {
     return (
         <div className='rows'>
-            <div className='header'>
+            <div className='header' style={{position: 'absolute'}}>
                 <Header />
             </div>
             <div className="home_container">

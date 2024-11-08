@@ -5,35 +5,19 @@ import secure from "@connect/secure";
 import Loading from "@pages/Loading/Loading";
 import useAutoScroll from "./useAutoScroll";
 import "./Message.css";
-import chatManager from "./chatManager";
 
 export default function Prototype() {
-    const CM = new chatManager();
-    const CMRef = useRef(CM);
 
-    const [chatsList, setChatsList] = useState(CM.getChatsList()); // Armazenamento dos chatsList
+    const [senderList, setSenderList] = useState([]); // Armazenamento dos remetentes
+    const [messageList, setMessageList] = useState([]); // Armazenamento das mensagens
+    const [contactList, setContactList] = useState([]); // Armazenamento dos contatos
     
     const [message, setMessage] = useState(''); // Estado de mensagem
-    const [currentRoom, setCurrentRoom] = useState(''); // Estado do quarto atual
 
-    const endRef = useAutoScroll([chatsList]); // Hook de scroll automático
+    const endRef = useAutoScroll([messageList]); // Hook de scroll automático
     const socketRef = useRef(null); // Referencia para o Socket
-    
-    const identity = localStorage.getItem('identity');
 
-    function Show () {
-        // Show
-        console.log("_______________[Show]________________");
-        console.log("CM: ", CM);
-        console.log("chatList: ", chatsList);
-        console.log("isSubmitting: ", isSubmitting);
-        console.log("currentRoom: ", currentRoom);
-        console.log("chatsList: ", chatsList);
-        console.log("EndRef: ", endRef);
-        console.log("socketRef: ", socketRef);
-        console.log("identity: ", identity);
-        console.log("_____________________________________");
-    }
+    const identity = localStorage.getItem('identity');
 
     useEffect(() => {
         socketRef.current = io("http://localhost:3000", {
@@ -44,10 +28,12 @@ export default function Prototype() {
             timeout: 20000
         });
 
-        const connectTimeout = setTimeout(() => {
-            console.log("Conectando...");
+        console.log("Conectando com socket...");
 
-            changeContact('room_global');
+        const connectTimeout = setTimeout(() => {
+
+            socketRef.current.emit('setIdentity', identity);
+            changeContact('m','global');
 
             // Conexão
             socketRef.current.on("connect", () => {
@@ -55,10 +41,10 @@ export default function Prototype() {
             });
 
             // Recebimento de mensagens
-            socketRef.current.on("message", (sender, message, room) => {
+            socketRef.current.on("message", (sender, message) => {
                 console.log(`Mensagem do servidor de ${sender}:`, message);
-                CMRef.current.sendMessage(room, sender, message);
-                setChatsList(CMRef.current.getChatsList());
+                setMessageList( prevList => [...prevList, message]);
+                setSenderList( prevList => [...prevList, sender]);
             });
 
             // Reconexão
@@ -76,28 +62,30 @@ export default function Prototype() {
 
         return () => {
             clearTimeout(connectTimeout);
-            console.log("Desconectando...");
-            socketRef.current.off("mensagem");
+            console.log("Desconectando com socket...");
+            socketRef.current.off("message");
+            socketRef.current.off("connect");
+            socketRef.current.off("reconnect_attempt");
+            socketRef.current.off("reconnect_failed");
             socketRef.current.disconnect();
         };
-    }, []); // Quando o `currentRoom` mudar, a conexão será atualizada <- Alerta
+    }, []);
 
     // Envio de mensagem
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (message !== '' && currentRoom !== '') {
-            socketRef.current.emit("message", identity, message, currentRoom);
-            CMRef.current.sendMessage(currentRoom, identity, message);
-            setChatsList(CMRef.current.getChatsList());
+        if (message !== '' && identity !== '') {
+            socketRef.current.emit("message", message);
             setMessage(""); // Corrigido aqui
         }
     };
 
     // Troca de sala
-    const changeContact = (target) => {
-        console.log('Mudança de contato: ', identity, target);
-        socketRef.current.emit('joinRoom', identity, target, setCurrentRoom);
-        setChatsList(CMRef.current.getChatsList());
+    const changeContact = (type, target) => {
+        console.log('Mudança de contato:', type, target);
+        socketRef.current.emit('joinRoom', type, target);
+        setMessageList([]);
+        setSenderList([]);
     };
 
     return (
@@ -108,7 +96,7 @@ export default function Prototype() {
                 </div>
                 <div className="main columns">
                     <div className="message-contact message-scroll-container" style={{ flex: 2 }}>
-                        {chatsList.map((chat, index) => (
+                        {contactList.map((chat, index) => (
                             <div className="message-container" key={index}>
                                 <button
                                     type="button"
@@ -123,18 +111,12 @@ export default function Prototype() {
                     <div className="message-chat" style={{ flex: 8 }}>
                         <div className="message-messages">
                             <div className="message-scroll-container">
-                                {chatsList
-                                    .find(chat => chat.room === currentRoom)
-                                    ?.messagesList.map((msg, index) => (
+                                {messageList.map((msg, index) => (
                                         <div className="message-container" key={index}>
                                             <div
-                                                className={`message-message ${chatsList
-                                                    .find(chat => chat.room === currentRoom)
-                                                    ?.sendersList[index] === identity ? 'message-you' : 'message-other'}`}
+                                                className={`message-message ${senderList[index] === identity ? 'message-you' : 'message-other'}`}
                                             >
-                                                {msg} ({chatsList
-                                                    .find(chat => chat.room === currentRoom)
-                                                    ?.sendersList[index]})
+                                                {msg} ({senderList[index]})
                                             </div>
                                         </div>
                                     ))}

@@ -1,6 +1,5 @@
 export default class ChatManager {
     constructor() {
-      // { type: "", target: "", messagesList: [], sendersList: [], dateList: [] }
       localStorage.setItem("chatsList", JSON.stringify(null));
       const chatsList = JSON.parse(localStorage.getItem("chatsList")) || [];
       this.chatsList = chatsList;

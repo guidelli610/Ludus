@@ -4,7 +4,9 @@ export default function Loading () {
 
     return (
         <>
-            <h1>Loading...</h1>
+            <div className="all center">
+                <h1>Loading...</h1>
+            </div>
         </>
     );
 }

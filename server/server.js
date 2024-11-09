@@ -1,3 +1,5 @@
+import { Chess } from "chess.js"
+
 import dotenv from 'dotenv';
 dotenv.config();
 //Configura a variável de ambiente no arquivo '.env'
@@ -68,13 +70,17 @@ const socket = io("http://localhost:3000", {
 });
 */
 
-
 let users = {}; // Objeto para armazenar os usuários conectados
+
+let matchs = {};
 
 io.on('connection', (socket) => {
   // Inicializa a propriedade currentRoom e identity como null
   socket.currentRoom = null;
   socket.identity = null;
+  socket.target = null;
+
+  // _________________________________________[Mensagem]_________________________________________ //
 
   console.log('Cliente conectado com ID:', socket.id);
 
@@ -90,14 +96,14 @@ io.on('connection', (socket) => {
     return io.sockets.adapter.rooms.has(roomName);
   }
 
-  const selectRoomName = (type, target) => {
+  const selectRoomName = (target, key) => {
     if (!target || !socket.identity) return null; // Verificação para garantir que o target é válido
     let roomName;
     if (target === "global") {
       roomName = `room_global`;
     } else {
-      roomName = `room_${type}_${socket.identity}_${target}`;
-      const roomTest = `room_${type}_${target}_${socket.identity}`;
+      roomName = `room_${socket.identity}_${target}_${key}`;
+      const roomTest = `room_${target}_${socket.identity}_${key}`;
       if (doesRoomExist(roomTest)) {
         roomName = roomTest;
       }
@@ -106,9 +112,10 @@ io.on('connection', (socket) => {
   }
 
   // Criar e entrar em uma sala quando um usuário quiser
-  socket.on('joinRoom', (type, target) => {
-    socket.currentRoom = selectRoomName(type, target);
+  socket.on('joinRoom', (target, key = '') => {
+    socket.currentRoom = selectRoomName(target, key);
     if (socket.currentRoom && !socket.rooms.has(socket.currentRoom)) {
+      socket.target = target;
       socket.join(socket.currentRoom);
       console.log(`${socket.identity} entrou na sala: ${socket.currentRoom}`);
       socket.emit('message', socket.identity, `Você entrou na sala: ${socket.currentRoom}`);
@@ -117,8 +124,8 @@ io.on('connection', (socket) => {
   });
 
   // Sai de uma sala quando um usuário quiser
-  socket.on('leaveRoom', (type, target) => {
-    const roomName = selectRoomName(type, target);
+  socket.on('leaveRoom', (target, key = '') => {
+    const roomName = selectRoomName(target, key);
     
     if (roomName && socket.rooms.has(roomName)) {
       socket.leave(roomName);
@@ -129,6 +136,7 @@ io.on('connection', (socket) => {
       // Limpa `currentRoom` se a sala que saiu era a atual
       if (socket.currentRoom === roomName) {
         socket.currentRoom = null;
+        socket.target = null;
       }
     }
   });
@@ -153,6 +161,49 @@ io.on('connection', (socket) => {
     delete users[socket.id]; // Remove o usuário da lista
     console.log('Total de usuários após desconexão: ', users);
   });
+  // _________________________________________[Teste]_________________________________________ //
+
+  // Obter IDs de sockets de uma sala a qualquer momento
+  socket.on("getRoomUsers", () => {
+    console.log("getRoomUsers");
+    const roomSockets = io.sockets.adapter.rooms.get(socket.currentRoom);
+    if (roomSockets) {
+        console.log(`Usuários na sala ${socket.currentRoom}:`, [...roomSockets]);
+    } else {
+        console.log(`Sala ${socket.currentRoom} não existe ou não há usuários.`);
+    }
+  });
+  // _________________________________________[Xadrez]_________________________________________ //
+
+  socket.on('startMatch', () => {
+    if (!rooms[socket.currentRoom]) {
+      rooms[socket.currentRoom] = { white: socket.identity, black: socket.target, turn: socket.identity, chess: new Chess() };
+    }
+  });
+
+  socket.on('endMatch', () => {
+    if (rooms[socket.currentRoom]) {
+      delete rooms[socket.currentRoom];
+    }
+  });
+
+  socket.on('move', (from, to) => {
+    const room = rooms[socket.currentRoom];
+
+    if (room && room?.turn == socket.identity) {
+      try {
+        room.chess.move({from: from, to: to});
+        room.turn = socket.target;
+        socket.emit('valid', "system", `Você terminou sua jogada, vez de ${socket.target}!`, from, to);
+        socket.to(socket.currentRoom).emit('valid', "system", `${socket.identity} terminou sua jogada, vez de ${socket.target}!`, from, to);
+      } catch(e) {
+        socket.emit('invalid', "system", e.message);
+      }
+      
+    }
+  });
+
+
 });
 
 

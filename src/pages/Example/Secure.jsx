@@ -4,7 +4,7 @@ import secure from "@connect/secure";
 
 export default function Prototype(){
 
-    if (secure('prototype1')) { return <Loading/> } // Acesso com pedido deautenticação
+    if (secure()) { return <Loading/> } // Acesso com pedido de autenticação
 
     return (
         <>

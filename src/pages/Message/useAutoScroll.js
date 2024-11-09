@@ -5,7 +5,7 @@ export default function useAutoScroll(dependencies) {
 
     useEffect(() => {
         endRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, dependencies);
+    }, [dependencies.length]);
 
     return endRef;
 }

@@ -1,21 +1,31 @@
-// Prototype.jsx
-import { useEffect, useState, useNavigate } from 'react';
+import { useEffect, useState } from 'react';
 import loginConnection from '@connect/loginConnection';
 import "@components/form.css";
 import Header from "@components/Header";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
-
     // Estado do botão (ativo e inativo)
-    const [isSubmitting, setIsSubmitting] = useState(false); // Habilitação do botão
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [alertMessage, setAlertMessage] = useState(''); // Estado para a mensagem de alerta
     const [showAlert, setShowAlert] = useState(false); // Estado para controlar a visibilidade do alerta
-    
+
+    const location = useLocation();
+
     //useEffect executa na criação de Login
     useEffect(() => {
-        const form = document.getElementById('form');
+        // Verifica se `location.state?.error` é um objeto `Error` e extrai a mensagem
+        const alert = location.state?.error;
+        if (alert instanceof Error) {
+            setAlertMessage(alert.message); // Extrai a mensagem do erro
+            setShowAlert(true);
+        } else if (alert) {
+            setAlertMessage(alert); // Caso `alert` seja uma string
+            setShowAlert(true);
+        }
 
+        const form = document.getElementById('form');
 
         const handleSubmit = (event) => {
             event.preventDefault(); // Impede a página regarregar
@@ -29,7 +39,7 @@ export default function Login() {
         return () => {
             form.removeEventListener('submit', handleSubmit);
         }
-    }, []);
+    }, [location.state]);
 
     return (
         <>

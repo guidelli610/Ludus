@@ -6,7 +6,9 @@ import Loading from "@pages/Loading/Loading";
 import useAutoScroll from "./useAutoScroll";
 import "./Message.css";
 
-export default function Prototype() {
+// { type: "", target: "", messagesList: [], sendersList: [], dateList: [] }
+
+export default function Message() {
 
     const [senderList, setSenderList] = useState([]); // Armazenamento dos remetentes
     const [messageList, setMessageList] = useState([]); // Armazenamento das mensagens
@@ -33,7 +35,7 @@ export default function Prototype() {
         const connectTimeout = setTimeout(() => {
 
             socketRef.current.emit('setIdentity', identity);
-            changeContact('m','global');
+            changeContact('global');
 
             // Conexão
             socketRef.current.on("connect", () => {
@@ -75,67 +77,73 @@ export default function Prototype() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (message !== '' && identity !== '') {
+            socketRef.current.emit("getRoomUsers");
             socketRef.current.emit("message", message);
             setMessage(""); // Corrigido aqui
         }
     };
 
     // Troca de sala
-    const changeContact = (type, target) => {
-        console.log('Mudança de contato:', type, target);
-        socketRef.current.emit('joinRoom', type, target);
+    const changeContact = (target) => {
+        console.log('Mudança de contato:', target);
+        socketRef.current.emit('joinRoom', target);
         setMessageList([]);
         setSenderList([]);
     };
 
+    if (secure()) { return <Loading/> } // Acesso com pedido deautenticação
+
     return (
         <>
-            <div className="all rows">
-                <div className="header">
-                    <Header />
-                </div>
-                <div className="main columns">
-                    <div className="message-contact message-scroll-container" style={{ flex: 2 }}>
-                        {contactList.map((chat, index) => (
-                            <div className="message-container" key={index}>
-                                <button
-                                    type="button"
-                                    className="message-button"
-                                    onClick={() => changeContact(chat.room)}
-                                >
-                                    {chat.room}
-                                </button>
-                            </div>
-                        ))}
+            <div className="all">
+                <div className="rows">
+                    <div className="header">
+                        <Header />
                     </div>
-                    <div className="message-chat" style={{ flex: 8 }}>
-                        <div className="message-messages">
-                            <div className="message-scroll-container">
-                                {messageList.map((msg, index) => (
-                                        <div className="message-container" key={index}>
-                                            <div
-                                                className={`message-message ${senderList[index] === identity ? 'message-you' : 'message-other'}`}
-                                            >
-                                                {msg} ({senderList[index]})
-                                            </div>
-                                        </div>
-                                    ))}
-                                <div ref={endRef} />
-                            </div>
+                    <div className="main columns">
+                        <div className="message-contact message-scroll-container" style={{ flex: 2 }}>
+                            {contactList.map((chat, index) => (
+                                <div className="message-container" key={index}>
+                                    <button
+                                        type="button"
+                                        className="message-button"
+                                        onClick={() => changeContact(chat.room)}
+                                    >
+                                        {chat.room}
+                                    </button>
+                                </div>
+                            ))}
+                            <div ref={endRef} />
                         </div>
-                        
-                        <form onSubmit={handleSubmit} className="message-call">
-                            <input
-                                type="text"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Digite sua mensagem"
-                                className="message-input"
-                            />
-                            <button type="submit" className="message-submit">
-                                Enviar
-                            </button>
-                        </form>
+                        <div className="message-chat" style={{ flex: 8 }}>
+                            <div className="message-messages">
+                                <div className="message-scroll-container">
+                                    {messageList.map((msg, index) => (
+                                            <div className="message-container" key={index}>
+                                                <div
+                                                    className={`message-message ${senderList[index] === identity ? 'message-you' : 'message-other'}`}
+                                                >
+                                                    {msg} ({senderList[index]})
+                                                </div>
+                                            </div>
+                                        ))}
+                                    <div ref={endRef} />
+                                </div>
+                            </div>
+                            
+                            <form onSubmit={handleSubmit} className="message-call">
+                                <input
+                                    type="text"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Digite sua mensagem"
+                                    className="message-input"
+                                />
+                                <button type="submit" className="message-submit">
+                                    Enviar
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

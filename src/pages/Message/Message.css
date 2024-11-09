@@ -3,7 +3,7 @@
     display: flex;
     gap: 10px;
     background-color: rgb(30, 30, 30);
-    padding: 10px;
+    margin: 10px;
     flex-direction: column;
     flex: 1;
 }
@@ -75,8 +75,8 @@
     display: flex;
     flex: auto;
     flex-direction: column;
-    overflow-y: auto;
-    max-height: 580px;
+    overflow-y: scroll;
+    max-height: 100%;
     border-radius: 0.5rem;
     gap: 5px;
 
@@ -86,13 +86,14 @@
     }
 
     &::-webkit-scrollbar-track {
-        background: #f1f1f1;    /* Cor de fundo da trilha */
-        border-radius: 4px;
+        background: #88888831;       /* Cor da barra de rolagem */
+        border-radius: 2px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: #888;       /* Cor da barra de rolagem */
-        border-radius: 4px;   /* Borda arredondada para a barra */
+        background: rgba(255, 255, 255, 0.543);    /* Cor de fundo da trilha */
+        border-radius: 2px;   /* Borda arredondada para a barra */
+        scroll-padding-block: 2px;
     }
 }
 
@@ -106,6 +107,7 @@
     max-width: 70%; /* Limita a largura das mensagens */
     padding: 10px 15px;
     border-radius: 15px;
+    margin-right: 10px;
 }
 
 .message-you {

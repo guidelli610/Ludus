@@ -58,13 +58,29 @@ export default function Match() {
         ],
     ]);
 
-    const renderBoard = () => {
+    const renderRows = () => {
         return (
-            board.map((b, index) => {
-                console.log(b, index);
-                return <p>Oi</p>
+            board.map((row, indexY) => {
+                console.log(row);
+                return (
+                    <div className="core columns">
+                        {renderColumns(row, indexY)}
+                    </div>
+                );
             })
-            
+        );
+    }
+
+    const renderColumns = (row, indexY) => {
+        return (
+            row.map((spot, indexX) => {
+                console.log(spot);
+                return (
+                    <div className="core">
+                        <p style={{margin: 0}}>Oi</p>
+                    </div>
+                )
+            })
         );
     }
 
@@ -87,8 +103,8 @@ export default function Match() {
                         </div>
                     </div>
                     <div className='main center match-background2' style={{flex: 8}}>
-                        <div style={{backgroundColor: 'Red', width: '80%', height: '80%'}}>
-                            {renderBoard()}
+                        <div className="rows" style={{backgroundColor: 'Red', width: '80%', height: '80%', flexGrow: 0}}>
+                            {renderRows()}
                         </div>
                     </div>
                     <div className='rows match-background1' style={{flex: 3}}>

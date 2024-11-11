@@ -1,7 +1,73 @@
+import { useState } from "react";
 import React from 'react';
 import "./Match.css";
 
 export default function Match() {
+    const [board, updateBoard] = useState([ // Isso vai cobrir o estado em relação as peças. 
+        [
+            {tipo: 'Torre', cor: 'Branca'},
+            {tipo: 'Cavalo', cor: 'Branca'},
+            {tipo: 'Bispo', cor: 'Branca'},
+            {tipo: 'Rainha', cor: 'Branca'},
+            {tipo: 'Rei', cor: 'Branca'},
+            {tipo: 'Bispo', cor: 'Branca'},
+            {tipo: 'Cavalo', cor: 'Branca'}, 
+            {tipo: 'Torre', cor: 'Branca'}
+        ],
+        [
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'},
+            {tipo: 'Peao', cor: 'Branca'}
+        ],
+        [
+            {},{},{},{},{},{},{},{}
+        ],
+        [
+            {},{},{},{},{},{},{},{}
+        ],
+        [
+            {},{},{},{},{},{},{},{}
+        ],
+        [
+            {},{},{},{},{},{},{},{}
+        ],
+        [
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'},
+            {tipo: 'Peao', cor: 'Preta'}
+        ],
+        [
+            {tipo: 'Torre', cor: 'Preta'},
+            {tipo: 'Cavalo', cor: 'Preta'},
+            {tipo: 'Bispo', cor: 'Preta'},
+            {tipo: 'Rainha', cor: 'Preta'},
+            {tipo: 'Rei', cor: 'Preta'},
+            {tipo: 'Bispo', cor: 'Preta'},
+            {tipo: 'Cavalo', cor: 'Preta'}, 
+            {tipo: 'Torre', cor: 'Preta'}
+        ],
+    ]);
+
+    const renderBoard = () => {
+        return (
+            board.map((b, index) => {
+                console.log(b, index);
+                return <p>Oi</p>
+            })
+            
+        );
+    }
+
     return (
         <>
             <div className='all'>
@@ -21,7 +87,9 @@ export default function Match() {
                         </div>
                     </div>
                     <div className='main center match-background2' style={{flex: 8}}>
-                        <h3>Game</h3>
+                        <div style={{backgroundColor: 'Red', width: '80%', height: '80%'}}>
+                            {renderBoard()}
+                        </div>
                     </div>
                     <div className='rows match-background1' style={{flex: 3}}>
                         <div className='rows' style={{flex: 4}}>

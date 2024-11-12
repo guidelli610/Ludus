@@ -61,9 +61,8 @@ export default function Match() {
     const renderRows = () => {
         return (
             board.map((row, indexY) => {
-                console.log(row);
                 return (
-                    <div className="core columns">
+                    <div style={{ width: '100%', height: '100%', display: 'grid', gridAutoFlow: 'column'}}>
                         {renderColumns(row, indexY)}
                     </div>
                 );
@@ -72,12 +71,14 @@ export default function Match() {
     }
 
     const renderColumns = (row, indexY) => {
+        const styleBlack = { backgroundColor: "#1c1c1c", margin: 0, width: '100%', height: '100%' }
+        const styleWhite = { backgroundColor: "#e5e5e5", margin: 0, width: '100%', height: '100%' }
         return (
             row.map((spot, indexX) => {
-                console.log(spot);
                 return (
-                    <div className="core">
-                        <p style={{margin: 0}}>Oi</p>
+                    <div style={(indexX + indexY) % 2 === 0 ? styleBlack : styleWhite}>
+                        
+                        <p style={{position: 'absolute'}}>{indexX + "-" + indexY}</p>
                     </div>
                 )
             })
@@ -103,7 +104,7 @@ export default function Match() {
                         </div>
                     </div>
                     <div className='main center match-background2' style={{flex: 8}}>
-                        <div className="rows" style={{backgroundColor: 'Red', width: '80%', height: '80%', flexGrow: 0}}>
+                        <div style={{ height: '85%', aspectRatio: 1, display: 'grid' }}>
                             {renderRows()}
                         </div>
                     </div>

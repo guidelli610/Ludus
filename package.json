@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "nodemon ./server/server.js",
+    "server": "nodemon ./src/model/server.js",
     "start": "concurrently --names \"DEV,SERV\" \"npm run dev\" \"npm run server\""
   },
   "dependencies": {

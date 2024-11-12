@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@connect': resolve(__dirname, 'server/connect'),
-      '@components': resolve(__dirname, 'src/components'),
-      '@pages': resolve(__dirname, 'src/pages')
+      '@connect': resolve(__dirname, 'src/controller'),
+      '@components': resolve(__dirname, 'src/view/components'),
+      '@pages': resolve(__dirname, 'src/view/pages')
     }
   },
 })

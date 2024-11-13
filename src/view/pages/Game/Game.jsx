@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import React from 'react';
 import "./Game.css";
+import { faChessBishop } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Game() {
     const location = useLocation();
@@ -11,27 +13,24 @@ export default function Game() {
 
     const [board, updateBoard] = useState([ // Isso vai cobrir o estado em relação as peças. 
         [
-            {tipo: 'Torre', cor: 'Branca'},
-            {tipo: 'Cavalo', cor: 'Branca'},
-            {tipo: 'Bispo', cor: 'Branca'},
-            {tipo: 'Rainha', cor: 'Branca'},
-            {tipo: 'Rei', cor: 'Branca'},
-            {tipo: 'Bispo', cor: 'Branca'},
-            {tipo: 'Cavalo', cor: 'Branca'}, 
-            {tipo: 'Torre', cor: 'Branca'}
+            {tipo: 'T', cor: 1}, // 1 = branco, 0 = preto.
+            {tipo: 'C', cor: 1},
+            {tipo: 'B', cor: 1},
+            {tipo: 'Ra', cor: 1},
+            {tipo: 'Re', cor: 1},
+            {tipo: 'B', cor: 1}, // Sê vc ler os tipos desses ultimos três fica BCT hihihihihihihhi
+            {tipo: 'C', cor: 1}, 
+            {tipo: 'T', cor: 1} 
         ],
         [
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'},
-            {tipo: 'Peao', cor: 'Branca'}
-        ],
-        [
-            {},{},{},{},{},{},{},{}
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1},
+            {tipo: 'P', cor: 1}
         ],
         [
             {},{},{},{},{},{},{},{}
@@ -43,24 +42,27 @@ export default function Game() {
             {},{},{},{},{},{},{},{}
         ],
         [
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'},
-            {tipo: 'Peao', cor: 'Preta'}
+            {},{},{},{},{},{},{},{}
         ],
         [
-            {tipo: 'Torre', cor: 'Preta'},
-            {tipo: 'Cavalo', cor: 'Preta'},
-            {tipo: 'Bispo', cor: 'Preta'},
-            {tipo: 'Rainha', cor: 'Preta'},
-            {tipo: 'Rei', cor: 'Preta'},
-            {tipo: 'Bispo', cor: 'Preta'},
-            {tipo: 'Cavalo', cor: 'Preta'}, 
-            {tipo: 'Torre', cor: 'Preta'}
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0},
+            {tipo: 'P', cor: 0}
+        ],
+        [
+            {tipo: 'T', cor: 0},
+            {tipo: 'C', cor: 0},
+            {tipo: 'B', cor: 0},
+            {tipo: 'Ra', cor: 0},
+            {tipo: 'Re', cor: 0},
+            {tipo: 'B', cor: 0},
+            {tipo: 'C', cor: 0}, 
+            {tipo: 'T', cor: 0}
         ],
     ]);
 
@@ -77,18 +79,26 @@ export default function Game() {
     }
 
     const renderColumns = (row, indexY) => {
-        const styleBlack = { backgroundColor: "#1c1c1c", margin: 0, width: '100%', height: '100%' }
-        const styleWhite = { backgroundColor: "#e5e5e5", margin: 0, width: '100%', height: '100%' }
+        const styleBlack = { backgroundColor: "#1c1c1c", margin: 0, display: 'flex' }
+        const styleWhite = { backgroundColor: "#e5e5e5", margin: 0, display: 'flex' }
         return (
             row.map((spot, indexX) => {
                 return (
                     <div style={(indexX + indexY) % 2 === 0 ? styleBlack : styleWhite}>
-                        
-                        <p style={{position: 'absolute'}}>{indexX + "-" + indexY}</p>
+                        {renderPiece(board[indexY][indexX])}
                     </div>
                 )
             })
         );
+    }
+
+    const renderPiece = (peca) => {
+        const color = peca.cor === 1 ? 'white' : 'black';
+        if(!!peca.tipo) {
+            return(
+                <FontAwesomeIcon style={{ position: 'relative' }} size="2x" color={color} icon={faChessBishop}/>
+            );
+        }
     }
 
     return (
@@ -110,7 +120,7 @@ export default function Game() {
                         </div>
                     </div>
                     <div className='main center game-background2' style={{flex: 8}}>
-                        <div style={{ height: '85%', aspectRatio: 1, display: 'grid' }}>
+                        <div style={{ height: '85%', aspectRatio: 1, display: 'grid',  }}>
                             {renderRows()}
                         </div>
                     </div>

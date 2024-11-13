@@ -1,13 +1,13 @@
 
-.match-background1 {
+.game-background1 {
     background-color: rgb(26, 26, 26);
 }
 
-.match-background2 {
+.game-background2 {
     background-color: rgb(40, 40, 40); 
 }
 
-.match-titles{
+.game-titles{
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1;
     font-weight: 600;
@@ -16,14 +16,14 @@
     margin-top: 5px;
 }
 
-.match-border {
+.game-border {
     border-radius: 10px; /* Define cantos arredondados */
     background-color: rgb(57, 57, 57); /* Define a cor de fundo do elemento */
     border: 2px solid rgb(137, 137, 137); /* Define a largura da borda e cor (usando apenas a propriedade 'border') */
     margin: 10px; /* Define o espaçamento externo ao redor do elemento */
 }
 
-.match-call {
+.game-call {
     display: flex;
     gap: 10px;
     margin-left: 10px;
@@ -34,7 +34,7 @@
     flex: 1;
 }
 
-.match-submit {
+.game-submit {
     background-color: black; /* Cor de fundo preta */
     color: white; /* Texto branco */
     border: 2px solid gray; /* Borda cinza */
@@ -44,13 +44,13 @@
     transition: background-color 0.3s ease; /* Transição suave para hover */
 }
 
-.match-submit:hover {
+.game-submit:hover {
     background-color: gray; /* Fica cinza ao passar o mouse */
     color: black; /* Texto preto no hover */
 }
 
 /* Estilo do input */
-.match-input {
+.game-input {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-size: 18px;
     background-color: rgba(255, 255, 255, 0.3); /* Fundo branco */
@@ -62,7 +62,7 @@
     box-sizing: border-box; /* Inclui padding e border na largura */
 }
 
-.match-input:focus {
+.game-input:focus {
     border-color: gray; /* Borda preta quando focado */
     outline: none; /* Remove a borda padrão de foco */
 }

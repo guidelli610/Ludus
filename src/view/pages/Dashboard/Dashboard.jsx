@@ -52,7 +52,7 @@ export default function Dashboard() {
                     </div>
                     <div className='.core'>
                         <h2 className="leftOffset">Minhas partidas</h2>
-                        <div className='p_inner fullDash'>
+                        <div className='dashBoard fullDash'>
                             {renderTabBar()}
                             {renderContent()}
                         </div>

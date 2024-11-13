@@ -8,6 +8,7 @@ return(
             <Link to="/Login" className="">Login</Link>
             <Link to="/Register" className="">Registrar</Link>
             <Link to="/Message" className="">Mensagem</Link>
+            <Link to="/matchs" className="">Partida</Link>
             <Link to="/About" className="">Sobre</Link>
         </div>
     )

@@ -9,8 +9,9 @@ import NotFound from './pages/NotFound/NotFound.jsx';
 import Message from './pages/Message/Message.jsx';
 import About from './pages/About/About.jsx';
 import Style from './pages/Style/Style.jsx';
-import Match from './pages/Match/Match.jsx';
+import Matchs from './pages/Matchs/Matchs.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
+import Game from './pages/Game/Game.jsx';
 
 const router = createBrowserRouter([
     {
@@ -46,19 +47,24 @@ const router = createBrowserRouter([
         element: <Style />
     }, 
     {
-        path: "/match",
-        element: <Match />
+        path: "/matchs",
+        element: <Matchs />
     },
     {
         path: "/dashboard",
         element: <Dashboard />
+    },
+    {
+        path: "/game",
+        element: <Game />
     }
 ]);
 
-export default function Navigation() {
-    return(
-        <Suspense fallback={<div>Loading...</div>}>
-            <RouterProvider router={router}/>        
-        </Suspense>   
-    );
-}
+// Crie um componente React válido
+const App = () => (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
+
+  export default App;

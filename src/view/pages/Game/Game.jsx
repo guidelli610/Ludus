@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import React from 'react';
-import "./Match.css";
+import "./Game.css";
 
-export default function Match() {
+export default function Game() {
+    const location = useLocation();
+    const { roomName, password } = location.state || {};
+    const identity = localStorage.getItem('identity');
+    console.log(roomName, password);
+
     const [board, updateBoard] = useState([ // Isso vai cobrir o estado em relação as peças. 
         [
             {tipo: 'Torre', cor: 'Branca'},
@@ -89,46 +95,46 @@ export default function Match() {
         <>
             <div className='all'>
                 <div className='columns'>
-                    <div className='rows match-background1' style={{flex: 3}}>
+                    <div className='rows game-background1' style={{flex: 3}}>
                         <div name='Clock' className='rows' style={{flex: 2}}>
-                            <span className='match-titles'>Timer</span>
-                            <div id='Timer' className='match-border center'>
-                                <span className='match-titles'>00:00:00</span>
+                            <span className='game-titles'>Timer</span>
+                            <div id='Timer' className='game-border center'>
+                                <span className='game-titles'>00:00:00</span>
                             </div>
                         </div>
                         <div className='rows' style={{flex: 8}}>
-                            <span className='match-titles'>Status</span>
-                            <div id='Timer' className='match-border center'>
-                                <span className='match-titles'>Content</span>
+                            <span className='game-titles'>Status</span>
+                            <div id='Timer' className='game-border center'>
+                                <span className='game-titles'>Content</span>
                             </div>
                         </div>
                     </div>
-                    <div className='main center match-background2' style={{flex: 8}}>
+                    <div className='main center game-background2' style={{flex: 8}}>
                         <div style={{ height: '85%', aspectRatio: 1, display: 'grid' }}>
                             {renderRows()}
                         </div>
                     </div>
-                    <div className='rows match-background1' style={{flex: 3}}>
+                    <div className='rows game-background1' style={{flex: 3}}>
                         <div className='rows' style={{flex: 4}}>
-                            <span className='match-titles'>Logs</span>
-                            <div id='Timer' className='match-border center'>
-                                <span className='match-titles'>Content</span>
+                            <span className='game-titles'>Logs</span>
+                            <div id='Timer' className='game-border center'>
+                                <span className='game-titles'>Content</span>
                             </div>
                         </div>
                         <div className='rows' style={{flex: 2}}>
-                            <span className='match-titles'>Logs</span>
-                            <div className='match-border center' style={{flex: 5}}>
+                            <span className='game-titles'>Logs</span>
+                            <div className='game-border center' style={{flex: 5}}>
                                 <div className='rows'>
                                     ----------------------
                                 </div>
                             </div>
-                            <form className="match-call">
+                            <form className="game-call">
                                 <input
                                     type="text"
                                     placeholder="Digite sua mensagem"
-                                    className="match-input"
+                                    className="game-input"
                                 />
-                                <button type="submit" className="match-submit">
+                                <button type="submit" className="game-submit">
                                     Enviar
                                 </button>
                             </form>

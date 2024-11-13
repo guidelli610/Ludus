@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import Navigation from './Navigation.tsx';
+import App from './App.jsx';
 import './global.css';
 
 createRoot(document.getElementById('core')).render(
   <StrictMode>
-    <Navigation />
+    <App />
   </StrictMode>
 )

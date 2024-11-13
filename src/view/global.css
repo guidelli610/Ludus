@@ -136,4 +136,59 @@ button:focus-visible {
   align-items: center;
   background-color: var(--trasparent-color);
   z-index: 999;
-} 
+}
+
+.form {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  max-width: 440px;
+  width: calc(100% - 40px);
+  padding: 44px;
+  margin-bottom: 20px;
+  background-color: #6d6d6d;
+  -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  min-width: 320px;
+  min-height: 320px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+    margin-top: 30px;
+}
+
+.title {
+    font-size: 2em;
+    line-height: 1;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert {
+    margin: 10px;
+}
+
+.alert-danger, .environmenttable .error {
+    color: #691911;
+    background-color: #f4d6d2;
+    border-color: #f0c5c1;
+}
+
+.alert {
+    position: relative;
+    padding: .4rem 1rem;
+    margin-bottom: .5rem;
+    border: 0 solid transparent;
+    border-radius: .3rem;
+}

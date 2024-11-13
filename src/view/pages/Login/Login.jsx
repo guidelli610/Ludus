@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import loginConnection from '@connect/loginConnection';
-import "@components/form.css";
 import Header from "@components/Header";
 import { useLocation } from "react-router-dom";
 
@@ -39,6 +38,7 @@ export default function Login() {
         return () => {
             form.removeEventListener('submit', handleSubmit);
         }
+        
     }, [location.state]);
 
     return (
@@ -49,12 +49,12 @@ export default function Login() {
                         <Header/>
                     </div>
                     <div className='main center'>
-                        <div className='p_inner'>
-                            <span className='p_title'>Enviar/Receber Dados</span>                            
-                            <form id="form" className='p_form'>
+                        <div className='form'>
+                            <span className='title'>Enviar/Receber Dados</span>                            
+                            <form id="form" className='rows' style={{gap: '5px'}}>
 
                                 {showAlert && (
-                                    <div className='p_alert p_alert-danger'>{alertMessage}</div>
+                                    <div className='alert alert-danger'>{alertMessage}</div>
                                 )}
 
                                 <label htmlFor="email">Email:</label>
@@ -63,7 +63,7 @@ export default function Login() {
                                 <label htmlFor="password">Senha:</label>
                                 <input type="text" id="password" name="password" required />
                                 
-                                <button type="submit" disabled={isSubmitting} className='p_button'>
+                                <button type="submit" disabled={isSubmitting} className='button'>
                                     {isSubmitting ? 'Enviando...' : 'Login'}
                                 </button>
                             </form>

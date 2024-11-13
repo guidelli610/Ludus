@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import registerConnection from '@connect/registerConnection';
 import Header from "@components/Header";
-import "@components/form.css";
 
 export default function Register() {
 
@@ -41,10 +40,10 @@ export default function Register() {
                         <Header/>
                     </div>
                     <div className='main center'>
-                        <div className='p_inner'>
-                            <span className='p_title'>Cadastro</span>
+                        <div className='form'>
+                            <span className='title'>Cadastro</span>
                             
-                            <form id="form" className='p_form'>
+                            <form id="form" className='rows' style={{gap: '5px'}}>
                                 
                                 <label htmlFor="identity">Identificador:</label>
                                 <input type="text" id="identity" name="identity" required />
@@ -58,7 +57,7 @@ export default function Register() {
                                 <label htmlFor="password">Senha:</label>
                                 <input type="text" id="password" name="password" required />
                                 
-                                <button type="submit" disabled={isSubmitting} className='p_button'>Enviar</button>
+                                <button type="submit" disabled={isSubmitting} className='button'>Enviar</button>
                             </form>
                         </div>
                     </div>

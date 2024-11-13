@@ -15,6 +15,7 @@ export default function Message() {
     const [contactList, setContactList] = useState([]); // Armazenamento dos contatos
     
     const [message, setMessage] = useState(''); // Estado de mensagem
+    const [roomCurrent, setRoomCurrent] = useState(''); // Estado de mensagem
 
     const endRef = useAutoScroll([messageList]); // Hook de scroll automático
     const socketRef = useRef(null); // Referencia para o Socket
@@ -49,6 +50,12 @@ export default function Message() {
                 setSenderList( prevList => [...prevList, sender]);
             });
 
+            // Recebimento de mensagens
+            socketRef.current.on("roomName", (roomName) => {
+                console.log(`Sala conectada:`, roomName);
+                setRoomCurrent(roomName);
+            });
+
             // Reconexão
             socketRef.current.on("reconnect_attempt", (attempt) => {
                 console.log(`Tentativa de reconexão #${attempt}`);
@@ -76,9 +83,9 @@ export default function Message() {
     // Envio de mensagem
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (message !== '' && identity !== '') {
-            socketRef.current.emit("getRoomUsers");
-            socketRef.current.emit("message", message);
+        if (message !== '' && identity !== '' && roomCurrent !== '') {
+            socketRef.current.emit("getRoomUsers", roomCurrent);
+            socketRef.current.emit("message", roomCurrent, message);
             setMessage(""); // Corrigido aqui
         }
     };
@@ -86,7 +93,7 @@ export default function Message() {
     // Troca de sala
     const changeContact = (target) => {
         console.log('Mudança de contato:', target);
-        socketRef.current.emit('joinRoom', target);
+        socketRef.current.emit('joinRoom', 'c',target);
         setMessageList([]);
         setSenderList([]);
     };

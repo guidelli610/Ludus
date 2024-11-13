@@ -70,15 +70,12 @@ const socket = io("http://localhost:3000", {
 });
 */
 
-let users = {}; // Objeto para armazenar os usuários conectados
+let users = {}; // Registro para análise
 
-let matchs = {};
+let rooms = {};
 
 io.on('connection', (socket) => {
-  // Inicializa a propriedade currentRoom e identity como null
-  socket.currentRoom = null;
   socket.identity = null;
-  socket.target = null;
 
   // _________________________________________[Mensagem]_________________________________________ //
 
@@ -96,14 +93,25 @@ io.on('connection', (socket) => {
     return io.sockets.adapter.rooms.has(roomName);
   }
 
-  const selectRoomName = (target, key) => {
+  // Criar e entrar em uma sala quando um usuário quiser
+  socket.on('doesRoomExist', (type, target) => {
+    const exist = doesRoomExist(selectRoomName(type, target));
+    if (exist){
+      socket.emit('exist', exist, "Nome de sala já existe!");
+    } 
+    else {
+      socket.emit('exist', exist, "Nome de sala não existe!");
+    }
+  });
+
+  const selectRoomName = (type, target) => {
     if (!target || !socket.identity) return null; // Verificação para garantir que o target é válido
     let roomName;
     if (target === "global") {
       roomName = `room_global`;
     } else {
-      roomName = `room_${socket.identity}_${target}_${key}`;
-      const roomTest = `room_${target}_${socket.identity}_${key}`;
+      roomName = `room_${type}_${socket.identity}_${target}`;
+      const roomTest = `room_${type}_${target}_${socket.identity}`;
       if (doesRoomExist(roomTest)) {
         roomName = roomTest;
       }
@@ -112,45 +120,48 @@ io.on('connection', (socket) => {
   }
 
   // Criar e entrar em uma sala quando um usuário quiser
-  socket.on('joinRoom', (target, key = '') => {
-    socket.currentRoom = selectRoomName(target, key);
-    if (socket.currentRoom && !socket.rooms.has(socket.currentRoom)) {
-      socket.target = target;
-      socket.join(socket.currentRoom);
-      console.log(`${socket.identity} entrou na sala: ${socket.currentRoom}`);
-      socket.emit('message', socket.identity, `Você entrou na sala: ${socket.currentRoom}`);
-      socket.to(socket.currentRoom).emit('message', socket.identity, `${socket.identity} entrou na sala!`);
+  socket.on('joinRoom', (type, target, password = '') => {
+    const roomName = selectRoomName(type, target);
+
+    if (!doesRoomExist(roomName)){
+      rooms[roomName] = { name: roomName, password: password, users: [], game: {} };
     }
+
+    if (roomName && !socket.rooms.has(roomName)) {
+      socket.target = target;
+      socket.join(roomName);
+      rooms[roomName].users.push(socket.identity);
+      console.log(`${socket.identity} entrou na sala: ${roomName}`);
+      socket.emit('message', socket.identity, `Você entrou na sala: ${roomName}`);
+      socket.emit('roomName', roomName);
+      socket.to(roomName).emit('message', socket.identity, `${socket.identity} entrou na sala!`);
+    }
+
+    console.log("Rooms: ", rooms);
   });
 
+
   // Sai de uma sala quando um usuário quiser
-  socket.on('leaveRoom', (target, key = '') => {
-    const roomName = selectRoomName(target, key);
+  socket.on('leaveRoom', (roomName) => {
     
     if (roomName && socket.rooms.has(roomName)) {
       socket.leave(roomName);
       console.log(`${socket.identity} saiu da sala: ${roomName}`);
       socket.emit('message', socket.identity, `Você saiu da sala: ${roomName}`);
       socket.to(roomName).emit('message', socket.identity, `${socket.identity} saiu da sala!`);
-
-      // Limpa `currentRoom` se a sala que saiu era a atual
-      if (socket.currentRoom === roomName) {
-        socket.currentRoom = null;
-        socket.target = null;
-      }
     }
   });
 
   // Envio de mensagens
-  socket.on('message', (message) => {
-    console.log(`Mensagem recebida de ${socket.identity} na sala ${socket.currentRoom}: `, message);
+  socket.on('message', (roomName, message) => {
+    console.log(`Mensagem recebida de ${socket.identity} na sala ${roomName}: `, message);
     
     // Verifica se o socket está na sala antes de retransmitir a mensagem
-    if (socket.rooms.has(socket.currentRoom)) {
+    if (socket.rooms.has(roomName)) {
       socket.emit('message', socket.identity, message);
-      socket.to(socket.currentRoom).emit('message', socket.identity, message);
+      socket.to(roomName).emit('message', socket.identity, message);
     } else {
-      console.log(`Cliente ${socket.id} tentou enviar uma mensagem para uma sala em que não está: ${socket.currentRoom}`);
+      console.log(`Cliente ${socket.id} tentou enviar uma mensagem para uma sala em que não está: ${roomName}`);
     }
   });
 
@@ -164,13 +175,13 @@ io.on('connection', (socket) => {
   // _________________________________________[Teste]_________________________________________ //
 
   // Obter IDs de sockets de uma sala a qualquer momento
-  socket.on("getRoomUsers", () => {
+  socket.on("getRoomUsers", (roomName) => {
     console.log("getRoomUsers");
-    const roomSockets = io.sockets.adapter.rooms.get(socket.currentRoom);
+    const roomSockets = io.sockets.adapter.rooms.get(roomName);
     if (roomSockets) {
-        console.log(`Usuários na sala ${socket.currentRoom}:`, [...roomSockets]);
+        console.log(`Usuários na sala ${roomName}:`, [...roomSockets]);
     } else {
-        console.log(`Sala ${socket.currentRoom} não existe ou não há usuários.`);
+        console.log(`Sala ${roomName} não existe ou não há usuários.`);
     }
   });
   // _________________________________________[Xadrez]_________________________________________ //

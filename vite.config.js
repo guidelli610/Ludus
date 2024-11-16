@@ -9,8 +9,9 @@ export default defineConfig({
     alias: {
       '@connect': resolve(__dirname, 'src/controller'),
       '@components': resolve(__dirname, 'src/view/components'),
-      '@pages': resolve(__dirname, 'src/view/pages')
+      '@pages': resolve(__dirname, 'src/view/pages'),
+      '@model': resolve(__dirname, 'src/model'),
+      '@controller': resolve(__dirname, 'src/controller')
     }
   },
 })
-

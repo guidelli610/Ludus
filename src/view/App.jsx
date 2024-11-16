@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { SocketProvider } from '@controller/SocketProvider';
 
 //import App from './App.jsx';
 import Login from './pages/Login/Login.jsx';
@@ -63,7 +64,9 @@ const router = createBrowserRouter([
 // Crie um componente React válido
 const App = () => (
     <Suspense fallback={<div>Loading...</div>}>
-      <RouterProvider router={router} />
+      <SocketProvider> 
+        <RouterProvider router={router} />
+      </SocketProvider>
     </Suspense>
   );
 

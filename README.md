@@ -20,6 +20,8 @@ ferramentas que o React pode oferecer
 - npm install socket.io-client
 - npm install concurrently --save-dev
 - npm install chess
+- npm install @fortawesome/fontawesome-svg-core @fortawesome/free-regular-svg-icons @fortawesome/react-fontawesome
+- npm install uuid
 
 ## Links:
 Site: https://ludus-mu.vercel.app/

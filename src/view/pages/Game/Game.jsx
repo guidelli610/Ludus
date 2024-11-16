@@ -1,15 +1,46 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useRef, useContext } from "react";
+import { SocketContext } from '@controller/SocketProvider';
+import { useLocation, useNavigate } from "react-router-dom";
 import React from 'react';
 import "./Game.css";
+import Loading from "@pages/Loading/Loading";
 import { faChessBishop } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Game() {
     const location = useLocation();
-    const { roomName, password } = location.state || {};
-    const identity = localStorage.getItem('identity');
-    console.log(roomName, password);
+    const navigate = useNavigate();
+    const { name, password } = location.state || {};
+
+    const [fail, setFail] = useState(false); // Estado para controlar a visibilidade do alerta
+
+    const [senderList, setSenderList] = useState([]); // Armazenamento dos remetentes
+    const [messageList, setMessageList] = useState([]); // Armazenamento das mensagens
+    const [isLoading, setIsLoading] = useState(true);
+
+    const { socket, connected, error } = useContext(SocketContext);
+
+    useEffect(() => {
+
+        if (!socket) return; // Proteção contra socket nulo
+
+        if (name === undefined){
+            navigate('/matchs', { state: { error: true, message: "Falha de criação de sala!"} });
+        } else {
+            setIsLoading(false);
+        }
+
+        // Recebimento de mensagens
+        socket.on("message", (sender, message) => {
+            console.log(`Mensagem do servidor de ${sender}:`, message);
+            setMessageList( prevList => [...prevList, message]);
+            setSenderList( prevList => [...prevList, sender]);
+        });
+
+        return () => {
+            socket.off("message");
+        };
+    }, []);
 
     const [board, updateBoard] = useState([ // Isso vai cobrir o estado em relação as peças. 
         [
@@ -70,7 +101,7 @@ export default function Game() {
         return (
             board.map((row, indexY) => {
                 return (
-                    <div style={{ width: '100%', height: '100%', display: 'grid', gridAutoFlow: 'column'}}>
+                    <div key={indexY} style={{ width: '100%', height: '100%', display: 'grid', gridAutoFlow: 'column'}}>
                         {renderColumns(row, indexY)}
                     </div>
                 );
@@ -84,7 +115,7 @@ export default function Game() {
         return (
             row.map((spot, indexX) => {
                 return (
-                    <div style={(indexX + indexY) % 2 === 0 ? styleBlack : styleWhite}>
+                    <div key={`${indexY}-${indexX}`} style={(indexX + indexY) % 2 === 0 ? styleBlack : styleWhite}>
                         {renderPiece(board[indexY][indexX])}
                     </div>
                 )
@@ -100,6 +131,8 @@ export default function Game() {
             );
         }
     }
+
+    if (isLoading) { return <Loading/> } // Acesso com pedido deautenticação
 
     return (
         <>

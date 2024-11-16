@@ -1,104 +1,62 @@
-import { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { SocketContext } from '@controller/SocketProvider';
+import { v4 as uuidv4 } from 'uuid';
 import Header from "@components/Header";
 import secure from "@connect/secure";
 import Loading from "@pages/Loading/Loading";
 import useAutoScroll from "./useAutoScroll";
 import "./Message.css";
 
-// { type: "", target: "", messagesList: [], sendersList: [], dateList: [] }
-
 export default function Message() {
-
-    const [senderList, setSenderList] = useState([]); // Armazenamento dos remetentes
-    const [messageList, setMessageList] = useState([]); // Armazenamento das mensagens
-    const [contactList, setContactList] = useState([]); // Armazenamento dos contatos
-    
-    const [message, setMessage] = useState(''); // Estado de mensagem
-    const [roomCurrent, setRoomCurrent] = useState(''); // Estado de mensagem
-
-    const endRef = useAutoScroll([messageList]); // Hook de scroll automático
-    const socketRef = useRef(null); // Referencia para o Socket
-
+    const { socket, connected, error } = useContext(SocketContext);
+    const [messageList, setMessageList] = useState([]);
+    const [contactList, setContactList] = useState([]);
+    const [message, setMessage] = useState('');
+    const endRef = useAutoScroll([messageList]);
     const identity = localStorage.getItem('identity');
+    const messageEndRef = useRef(null);
 
     useEffect(() => {
-        socketRef.current = io("http://localhost:3000", {
-            reconnection: true,
-            reconnectionAttempts: 5,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            timeout: 20000
-        });
+        if (!socket) return; // Proteção contra socket nulo
 
-        console.log("Conectando com socket...");
+        const messageHandler = (sender, message) => {
+            setMessageList(prevList => [...prevList, { message, sender, id: uuidv4() }]);
+            // Scroll para baixo após nova mensagem
+            messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        };
 
-        const connectTimeout = setTimeout(() => {
-
-            socketRef.current.emit('setIdentity', identity);
-            changeContact('global');
-
-            // Conexão
-            socketRef.current.on("connect", () => {
-                console.log("Conectado ao servidor:", socketRef.current.id);
-            });
-
-            // Recebimento de mensagens
-            socketRef.current.on("message", (sender, message) => {
-                console.log(`Mensagem do servidor de ${sender}:`, message);
-                setMessageList( prevList => [...prevList, message]);
-                setSenderList( prevList => [...prevList, sender]);
-            });
-
-            // Recebimento de mensagens
-            socketRef.current.on("roomName", (roomName) => {
-                console.log(`Sala conectada:`, roomName);
-                setRoomCurrent(roomName);
-            });
-
-            // Reconexão
-            socketRef.current.on("reconnect_attempt", (attempt) => {
-                console.log(`Tentativa de reconexão #${attempt}`);
-            });
-
-            // Falha da reconexão
-            socketRef.current.on("reconnect_failed", () => {
-                console.log("Falha ao reconectar. Atualizando a página...");
-                location.reload();
-            });
-
-        }, 500);
+        socket.on("message", messageHandler);
+        changeContact('d','global');
 
         return () => {
-            clearTimeout(connectTimeout);
-            console.log("Desconectando com socket...");
-            socketRef.current.off("message");
-            socketRef.current.off("connect");
-            socketRef.current.off("reconnect_attempt");
-            socketRef.current.off("reconnect_failed");
-            socketRef.current.disconnect();
+            socket.off("message", messageHandler); // Remova o listener corretamente
         };
-    }, []);
+    }, [socket]); // Dependencias atualizadas
 
-    // Envio de mensagem
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (message !== '' && identity !== '' && roomCurrent !== '') {
-            socketRef.current.emit("getRoomUsers", roomCurrent);
-            socketRef.current.emit("message", roomCurrent, message);
-            setMessage(""); // Corrigido aqui
+        if (message !== '') {
+            socket.emit("message", message);
+            setMessage("");
         }
     };
 
-    // Troca de sala
-    const changeContact = (target) => {
+    const changeContact = (type, target) => {
         console.log('Mudança de contato:', target);
-        socketRef.current.emit('joinRoom', 'c',target);
+        socket.emit('create&joinRoom', type, target); // Removido o 'd'
         setMessageList([]);
-        setSenderList([]);
     };
 
-    if (secure()) { return <Loading/> } // Acesso com pedido deautenticação
+    if (secure()) { return <Loading/>; }
+
+    if (error) {
+        return <div>Erro: {error.message}</div>;
+    }
+
+    if (!connected) {
+        return <div>Conectando...</div>;
+    }
 
     return (
         <>
@@ -109,14 +67,14 @@ export default function Message() {
                     </div>
                     <div className="main columns">
                         <div className="message-contact message-scroll-container" style={{ flex: 2 }}>
-                            {contactList.map((chat, index) => (
-                                <div className="message-container" key={index}>
+                            {contactList.map((chat) => (
+                                <div className="message-container" key={chat.id}> {/* Aqui está a chave! */}
                                     <button
                                         type="button"
                                         className="message-button"
-                                        onClick={() => changeContact(chat.room)}
+                                        onClick={() => changeContact(chat.type, chat.target)}  // Corrigido para usar os campos corretos
                                     >
-                                        {chat.room}
+                                        {chat.target} {/*  Ajuste se necessário para exibir o nome do contato */}
                                     </button>
                                 </div>
                             ))}
@@ -126,14 +84,14 @@ export default function Message() {
                             <div className="message-messages">
                                 <div className="message-scroll-container">
                                     {messageList.map((msg, index) => (
-                                            <div className="message-container" key={index}>
-                                                <div
-                                                    className={`message-message ${senderList[index] === identity ? 'message-you' : 'message-other'}`}
-                                                >
-                                                    {msg} ({senderList[index]})
-                                                </div>
+                                        <div className="message-container" key={msg.id}> {/* Usando messageId ou timestamp como chave */}
+                                            <div
+                                                className={`message-message ${msg.sender === identity ? 'message-you' : 'message-other'}`}
+                                            >
+                                                {msg.message} ({msg.sender})
                                             </div>
-                                        ))}
+                                        </div>
+                                    ))}
                                     <div ref={endRef} />
                                 </div>
                             </div>

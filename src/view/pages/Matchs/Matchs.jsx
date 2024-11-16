@@ -1,97 +1,61 @@
-import { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
+import React, { useState, useContext, useEffect } from 'react';
+import { SocketContext } from '@controller/SocketProvider';
 import Header from "@components/Header";
 import "./Matchs.css"
 import { useNavigate } from "react-router-dom";
 
-function Card(title, gameID) {
-    return (
-        <div>
-            <p>{title}</p>
-        </div>
-    );
-}
-
 export default function Match() {
     const navigate = useNavigate();
     
-    const [display, setDisplay] = useState(0);  // 0: Está mostrando os jogos atuais.
-                                                // 1: Está mostrando os jogos completos.
+    const [display, setDisplay] = useState(0);  // 0: Está mostrando os jogos publicos.
+                                                // 1: Está mostrando os jogos privados.
     const [isSubmitting, setIsSubmitting] = useState(false); // Desativação do ativador para evitar envios duplicados
     const [isCreate, setIsCreate] = useState(false); // Verificação da criação da sala
+    const [needPassword, setNeedPassword] = useState(false); // Verificação da criação da sala
 
     const [alertMessage, setAlertMessage] = useState(''); // Estado para a mensagem de alerta
     const [showAlert, setShowAlert] = useState(false); // Estado para controlar a visibilidade do alerta
+    const [jump, setJump] = useState(false); // Estado para controlar a visibilidade do alerta
 
-    const [roomExist, setRoomExist] = useState(true); // Estado para controlar a visibilidade do alerta
-    
-    const [roomName, setRoomName] = useState('');// Nome da sala
+    const [name, setName] = useState('');// Nome da sala
     const [password, setPassword] = useState('');// Nome da sala
 
-    const socketRef = useRef(null); // Referencia para o Socket
-    
-    useEffect(() => {
-        if (!roomExist) { // Se a sala não existir, navegue
-            navigate('/game', { state: { roomName: roomName, password: password } });
-        }
-      }, [roomExist]); // Adicione 'count' como dependência
+    const [publicRooms, setPublicRooms] = useState([]);
+    const [privateRooms, setPrivateRooms] = useState([]);
+
+    const { socket, connected, error } = useContext(SocketContext);
 
     useEffect(() => {
-        socketRef.current = io("http://localhost:3000", {
-            reconnection: true,
-            reconnectionAttempts: 5,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            timeout: 20000
+        if (jump) {
+            navigate('/game', { state: { name: name, password: password} });
+        }
+    }, [jump])
+
+    useEffect(() => {
+        if (!socket) return; // Proteção contra socket nulo
+
+        socket.emit('roomList');
+
+        // Recebimento de mensagens
+        socket.on("sucess", (sucess, message='') => {
+            console.log("Sucess: ", sucess, message);
+            setAlertMessage(message);
+            setShowAlert(!sucess);
+            setJump(sucess);
+        });
+        
+        // Ouvir por mensagens do servidor
+        socket.on('roomList', (publicRooms, privateRooms) => {
+            setPublicRooms(publicRooms);
+            setPrivateRooms(privateRooms);
         });
 
-        console.log("Conectando com socket...");
-
-        const connectTimeout = setTimeout(() => {
-
-            // Conexão
-            socketRef.current.on("connect", () => {
-                console.log("Conectado ao servidor:", socketRef.current.id);
-            });
-
-            // Recebimento de mensagens
-            socketRef.current.on("exist", (exist, message) => {
-                setAlertMessage(message);
-                setShowAlert(exist);
-                setRoomExist(exist);
-                console.log("Tesst: ", exist, message);
-            });
-
-            // Reconexão
-            socketRef.current.on("reconnect_attempt", (attempt) => {
-                console.log(`Tentativa de reconexão #${attempt}`);
-            });
-
-            // Falha da reconexão
-            socketRef.current.on("reconnect_failed", () => {
-                console.log("Falha ao reconectar. Atualizando a página...");
-                location.reload();
-            });
-
-        }, 500);
-
         return () => {
-            clearTimeout(connectTimeout);
-            console.log("Desconectando com socket...");
-            socketRef.current.off("connect");
-            socketRef.current.off("exist");
-            socketRef.current.off("reconnect_attempt");
-            socketRef.current.off("reconnect_failed");
-            socketRef.current.disconnect();
+            socket.off("sucess");
+            socket.off("roomList");
         };
-    }, []);
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        socketRef.current.emit("doesRoomExist", roomName);
-    };
-
+    }, [socket]);
+    
     const renderTabBar = () => {
         if(display == 0) {
             return (
@@ -109,18 +73,88 @@ export default function Match() {
             );
         }
     }
+    
+    const handleButtonMatchClick = (e) => {
+        e.preventDefault();
+        console.log("MatchsCLick", name, password);
+        socket.emit('joinRoom', 'd', name, password);
+    };
+
+
+    const newNeedPassword = () => {
+        if (needPassword){
+            return (
+                <div className="center createStyle">
+                    <div className='form'>
+                        <span className='title'>Senha</span>
+                        
+                        <form id="form" className='rows' style={{gap: '5px'}} onSubmit={handleButtonMatchClick}>
+                            {showAlert && (
+                                <div className='alert alert-danger'>{alertMessage}</div>
+                            )}
+
+                            {havePassword()}
+                            
+                            <button type="submit" disabled={isSubmitting} className='button'>
+                                {isSubmitting ? 'Criando...' : 'Criar'}
+                            </button>
+                            <button onClick={(e) => {setNeedPassword(false)}} disabled={isSubmitting} className='button'>Sair</button>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+    }
 
     const renderContent = () => {
         if(display == 0) {
             return (
                 <div className="gameDisplay">
-                    <p>Criar uma nova partida</p>
+                    {publicRooms.map((room, index) => (
+                    <button key={room.key} value={room.key} onClick={(e) => {handleButtonMatchClick(e.target.value)}} className={"matchButton"}>{room.name}</button>
+                    ))}
                 </div>
             )
         } else if (display == 1){
             return (
                 <div className="gameDisplay">
-                    <p>Criar uma sssnova partida</p>
+                    {privateRooms.map((room, index) => (
+                    <button key={room.key} value={room.key} onClick={(e) => {setName(e.target.value); setNeedPassword(true);}} className={"matchButton"}>{room.name}</button>
+                    ))}
+                </div>
+            );
+        }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("CreateCLick", name);
+        socket.emit("createRoom", 'g', name, password);
+    };
+
+    const newMatch = () => {
+        if (isCreate){
+            return (
+                <div className="center createStyle">
+                    <div className='form'>
+                        <span className='title'>Sala</span>
+                        
+                        <form id="form" className='rows' style={{gap: '5px'}} onSubmit={handleSubmit}>
+                            {showAlert && (
+                                <div className='alert alert-danger'>{alertMessage}</div>
+                            )}
+                            
+                            <label htmlFor="name">Nome da sala:</label>
+                            <input type="text" id="name" name="name" onChange={(e) => setName(e.target.value)} required />
+
+                            {havePassword()}
+                            
+                            <button type="submit" disabled={isSubmitting} className='button'>
+                                {isSubmitting ? 'Criando...' : 'Criar'}
+                            </button>
+                            <button onClick={(e) => {setIsCreate(false)}} disabled={isSubmitting} className='button'>Sair</button>
+                        </form>
+                    </div>
                 </div>
             );
         }
@@ -137,34 +171,6 @@ export default function Match() {
         }
     }
 
-    const newMatch = () => {
-        if (isCreate){
-            return (
-                <div className="center createStyle">
-                    <div className='form'>
-                        <span className='title'>Sala</span>
-                        
-                        <form id="form" className='rows' style={{gap: '5px'}} onSubmit={handleSubmit}>
-                            {showAlert && (
-                                <div className='alert alert-danger'>{alertMessage}</div>
-                            )}
-                            
-                            <label htmlFor="name">Nome da sala:</label>
-                            <input type="text" id="name" name="name" onChange={(e) => setRoomName(e.target.value)} required />
-
-                            {havePassword()}
-                            
-                            <button type="submit" disabled={isSubmitting} className='button'>
-                                {isSubmitting ? 'Criando...' : 'Criar'}
-                            </button>
-                            <button onClick={(e) => {setIsCreate(false)}} disabled={isSubmitting} className='button'>Sair</button>
-                        </form>
-                    </div>
-                </div>
-            );
-        }
-    }
-
     return (
         <>
             <div className='all' style={{ position: 'relative' }}> 
@@ -175,14 +181,13 @@ export default function Match() {
                     <div className='center'>
                         <div className='dashBoard fullDash'>
                             {renderTabBar()}
-                            <div className="dashButtons">
-                                <button onClick={(e) => {setIsCreate(true)}} className={"createButton"}>Criar partida</button>
-                            </div>
+                            <button onClick={(e) => {setIsCreate(true)}} className={"createButton"}>Criar partida</button>
                             {renderContent()}
                         </div>
                     </div>
                 </div>
                 {newMatch()}
+                {newNeedPassword()}
             </div>
         </>
     );

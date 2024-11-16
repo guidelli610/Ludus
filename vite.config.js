@@ -10,6 +10,7 @@ export default defineConfig({
       '@connect': resolve(__dirname, 'src/controller'),
       '@components': resolve(__dirname, 'src/view/components'),
       '@pages': resolve(__dirname, 'src/view/pages'),
+      '@assets': resolve(__dirname, 'src/view/assets'),
       '@model': resolve(__dirname, 'src/model'),
       '@controller': resolve(__dirname, 'src/controller')
     }

@@ -66,3 +66,32 @@
     border-color: gray; /* Borda preta quando focado */
     outline: none; /* Remove a borda padrão de foco */
 }
+
+.valid-move {
+    background-color: lightgreen !important;
+}
+
+.black-square {
+    background-color: #1c1c1c;
+    margin: 0;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+}
+
+.white-square {
+    background-color: #e5e5e5;
+    margin: 0;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+}
+
+.cordY {
+    margin-right: 10px;
+    font-weight: 500;
+}

@@ -141,7 +141,8 @@ io.on('connection', (socket) => {
     rooms[socket.currentRoom].users.push(socket.identity);
     console.log(`${socket.identity} criou a sala: ${socket.currentRoom}`);
     socket.emit('message', socket.identity, `Você criou e entrou na sala: ${socket.currentRoom}`);
-    socket.emit('sucess', true)
+    socket.emit('sucess', true);
+    socket.emit('uptadeRoom', 1);
     emitRoom();
   }
 
@@ -157,6 +158,7 @@ io.on('connection', (socket) => {
     socket.emit('message', socket.identity, `Você entrou na sala: ${socket.currentRoom}`);
     socket.to(socket.currentRoom).emit('message', socket.identity, `${socket.identity} entrou na sala!`);
     socket.emit('sucess', true);
+    socket.to(socket.currentRoom).emit('uptadeRoom', rooms[socket.currentRoom].users.length);
     emitRoom();
   }
 
@@ -283,32 +285,44 @@ io.on('connection', (socket) => {
 
   // _________________________________________[Xadrez]_________________________________________ //
 
-
   socket.on('startMatch', () => {
-    if (!rooms[socket.currentRoom]) {
-      rooms[socket.currentRoom] = { white: socket.identity, black: socket.target, turn: socket.identity, chess: new Chess() };
+    if (rooms[socket.currentRoom] && rooms[socket.currentRoom]?.users.length > 1) {
+
+      const isWhite = Math.random() < 0.5; // Determina aleatoriamente quem começa com branco
+      const whitePlayer = isWhite ? rooms[socket.currentRoom]?.users[0] : rooms[socket.currentRoom]?.users[1];
+      const blackPlayer = isWhite ? rooms[socket.currentRoom]?.users[1] : rooms[socket.currentRoom]?.users[0];
+
+      rooms[socket.currentRoom].game = { white: whitePlayer, black: blackPlayer, turn: whitePlayer, chess: new Chess() };
+      socket.emit('updateGame', whitePlayer, blackPlayer, whitePlayer);
+      socket.to(socket.currentRoom).emit('updateGame', whitePlayer, blackPlayer, whitePlayer);
     }
   });
 
+  socket.on('requestUpdateGame', () => {
+    const game = rooms[socket.currentRoom].game;
+    socket.emit('updateGame', game.white, game.black, game.turn);
+  })
+
   socket.on('endMatch', () => {
     if (rooms[socket.currentRoom]) {
-      delete rooms[socket.currentRoom];
+      delete rooms[socket.currentRoom].game;
     }
   });
 
   socket.on('move', (from, to) => {
-    const room = rooms[socket.currentRoom];
+    const game = rooms[socket.currentRoom].game;
+    console.log("move!");
 
-    if (room && room?.turn == socket.identity) {
+    if (game && game?.turn == socket.identity) {
       try {
-        room.chess.move({from: from, to: to});
-        room.turn = socket.target;
-        socket.emit('valid', "system", `Você terminou sua jogada, vez de ${socket.target}!`, from, to);
-        socket.to(socket.currentRoom).emit('valid', "system", `${socket.identity} terminou sua jogada, vez de ${socket.target}!`, from, to);
+        game.chess.move({from: from, to: to});
+        game.turn = game.turn == white ? black : white;
+        socket.emit('sucess', "system", `Você terminou sua jogada, vez de ${socket.identity}!`, from, to);
+        socket.to(socket.currentRoom).emit('sucess', "system", `${socket.identity} terminou sua jogada, vez de ${game.turn}!`, from, to);
+        socket.emit('updateGame', game.white, game.black, game.turn);
       } catch(e) {
-        socket.emit('invalid', "system", e.message);
+        socket.emit('sucess', "system", e.message);
       }
-      
     }
   });
 

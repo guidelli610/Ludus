@@ -74,8 +74,12 @@ export default function Match() {
         }
     }
     
-    const handleButtonMatchClick = (e) => {
-        e.preventDefault();
+    const handleButtonMatchClick = () => {
+        console.log("MatchsCLick", name, password);
+        socket.emit('joinRoom', 'd', name, password);
+    };
+
+    const handleButtonMatchPublicClick = (name) => {
         console.log("MatchsCLick", name, password);
         socket.emit('joinRoom', 'd', name, password);
     };
@@ -88,17 +92,17 @@ export default function Match() {
                     <div className='form'>
                         <span className='title'>Senha</span>
                         
-                        <form id="form" className='rows' style={{gap: '5px'}} onSubmit={handleButtonMatchClick}>
+                        <form id="form" className='rows' style={{gap: '5px'}}>
                             {showAlert && (
                                 <div className='alert alert-danger'>{alertMessage}</div>
                             )}
 
                             {havePassword()}
                             
-                            <button type="submit" disabled={isSubmitting} className='button'>
+                            <button type="submit" disabled={isSubmitting} onClick={() => {handleButtonMatchClick; setNeedPassword(false)}} className='button'>
                                 {isSubmitting ? 'Criando...' : 'Criar'}
                             </button>
-                            <button onClick={(e) => {setNeedPassword(false)}} disabled={isSubmitting} className='button'>Sair</button>
+                            <button onClick={setNeedPassword(false)} disabled={isSubmitting} className='button'>Sair</button>
                         </form>
                     </div>
                 </div>
@@ -111,7 +115,7 @@ export default function Match() {
             return (
                 <div className="gameDisplay">
                     {publicRooms.map((room, index) => (
-                    <button key={room.key} value={room.key} onClick={(e) => {handleButtonMatchClick(e.target.value)}} className={"matchButton"}>{room.name}</button>
+                    <button key={room.key} value={room.key} onClick={(e) => {handleButtonMatchPublicClick(e.target.value);}} className={"matchButton"}>{room.name}</button>
                     ))}
                 </div>
             )

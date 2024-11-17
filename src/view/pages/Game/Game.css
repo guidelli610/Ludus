@@ -16,6 +16,26 @@
     margin-top: 5px;
 }
 
+.game-subtitles{
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1;
+    font-weight: 470;
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.game-p{
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1;
+    font-weight: 400;
+    font-size: 1em;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .game-border {
     border-radius: 10px; /* Define cantos arredondados */
     background-color: rgb(57, 57, 57); /* Define a cor de fundo do elemento */
@@ -69,6 +89,8 @@
 
 .valid-move {
     background-color: lightgreen !important;
+    box-shadow: inset 0 0 0 0.5px rgb(76, 175, 76); /* Borda interna preta de 1px */
+    margin: 0;
 }
 
 .black-square {
@@ -93,5 +115,13 @@
 
 .cordY {
     margin-right: 10px;
-    font-weight: 500;
 }
+
+.bar {
+    width: auto;
+    background-color: #ddd;
+    border-radius: 5px;
+    height: 1.5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }

@@ -22,7 +22,7 @@ function IconChess({ piece, onDragStart, onDragEnd, onDragOver, onDrop }) {
     const imgSrc = pieceImages[piece];
     return (
         <div
-            style={{ width: '50px', height: '50px', userSelect: 'none', cursor: 'grab' }} // Adicionei cursor: grab
+            style={{ width: '50px', height: '50px', userSelect: 'none', cursor: 'grab', paddingLeft: '4px' }} // Adicionei cursor: grab
             draggable
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}

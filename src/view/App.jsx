@@ -13,6 +13,7 @@ import Style from './pages/Style/Style.jsx';
 import Matchs from './pages/Matchs/Matchs.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import Game from './pages/Game/Game.jsx';
+import TestGame from './pages/TestGame/TestGame.jsx';
 
 const router = createBrowserRouter([
     {
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
     {
         path: "/game",
         element: <Game />
+    },
+    {
+        path: "/test",
+        element: <TestGame />
     }
 ]);
 

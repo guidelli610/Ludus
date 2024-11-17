@@ -87,29 +87,30 @@ export default function Match() {
 
 
     const newNeedPassword = () => {
-        if (needPassword){
+        if (needPassword) {
             return (
                 <div className="center createStyle">
                     <div className='form'>
                         <span className='title'>Senha</span>
-                        
-                        <form id="form" className='rows' style={{gap: '5px'}}>
+    
+                        <form id="form" className='rows' style={{ gap: '5px' }}>
                             {showAlert && (
                                 <div className='alert alert-danger'>{alertMessage}</div>
                             )}
-
+    
                             {havePassword()}
-                            
-                            <button type="submit" disabled={isSubmitting} onClick={() => {handleButtonMatchClick; setNeedPassword(false)}} className='button'>
-                                {isSubmitting ? 'Criando...' : 'Criar'}
+    
+                            <button type="button" disabled={isSubmitting} onClick={() => { handleButtonMatchClick(); setNeedPassword(false); }} className='button'>
+                                {isSubmitting ? 'Entrando...' : 'Entrar'}
                             </button>
-                            <button onClick={setNeedPassword(false)} disabled={isSubmitting} className='button'>Sair</button>
+                            <button type="button" onClick={() => setNeedPassword(false)} disabled={isSubmitting} className='button'>Sair</button>
                         </form>
                     </div>
                 </div>
             );
         }
-    }
+        return null; // Retorna null se needPassword for false
+    };
 
     const renderContent = () => {
         if(display == 0) {

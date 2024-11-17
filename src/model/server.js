@@ -309,17 +309,20 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('move', (from, to) => {
-    const game = rooms[socket.currentRoom].game;
-    console.log("move!");
+  socket.on('move', (from, to, newBoard) => {
+    const game = rooms[socket.currentRoom]?.game;
+    console.log("move!", game);
 
     if (game && game?.turn == socket.identity) {
       try {
         game.chess.move({from: from, to: to});
-        game.turn = game.turn == white ? black : white;
-        socket.emit('sucess', "system", `Você terminou sua jogada, vez de ${socket.identity}!`, from, to);
-        socket.to(socket.currentRoom).emit('sucess', "system", `${socket.identity} terminou sua jogada, vez de ${game.turn}!`, from, to);
+        game.turn = game.turn == game.white ? game.black : game.white;
+        socket.emit('message', "system", `Você terminou sua jogada, vez de ${socket.identity}!`, from, to);
+        socket.to(socket.currentRoom).emit('message', "system", `${socket.identity} terminou sua jogada, vez de ${game.turn}!`, from, to);
         socket.emit('updateGame', game.white, game.black, game.turn);
+        socket.to(socket.currentRoom).emit('updateGame', game.white, game.black, game.turn);
+        socket.emit('updateBoard', newBoard);
+        socket.to(socket.currentRoom).emit('updateBoard', newBoard);
       } catch(e) {
         socket.emit('sucess', "system", e.message);
       }

@@ -12,10 +12,11 @@ export default function Game() {
     const navigate = useNavigate();
     const { name, password } = location.state || {};
 
-    const [white, setWhite] = useState('bb');
-    const [black, setBlack] = useState('jj');
-    const [turn, setTurn] = useState('jj');
-    const [players, setPlayers] = useState('jj');
+    const [white, setWhite] = useState('');
+    const [black, setBlack] = useState('');
+    const [turn, setTurn] = useState('');
+    const [players, setPlayers] = useState('');
+
     const identity = localStorage.getItem('identity');
 
     const [senderList, setSenderList] = useState([]); // Armazenamento dos remetentes
@@ -61,10 +62,29 @@ export default function Game() {
 
         // Recebimento de mensagens
         socket.on("updateGame", (white, black, turn) => {
+            console.log("updateGame (w/b/t)", white, black, turn);
             setIsWaiting(false);
             setWhite(white);
             setBlack(black);
             setTurn(turn);
+        });
+        
+        // Recebimento de mensagens
+        socket.on("updateBoard", (board) => {
+            setBoard(board);
+        });
+
+        // Recebimento de mensagens
+        socket.on("sucess", (sucess, message='') => {
+            console.log("Sucess: ", sucess, message);
+            //setAlertMessage(message);
+            //setShowAlert(!sucess);
+            //setJump(sucess);
+        });
+
+        // Recebimento de mensagens
+        socket.on("message", (sender, message='') => {
+            console.log("Menssagem: ", sender, message);
         });
 
         // Recebimento de mensagens
@@ -266,6 +286,45 @@ export default function Game() {
         console.log("handleDragOver");
     };
 
+    const move = (piece, positionA, positionB) => {
+
+        if (positionB?.leght != positionA?.leght != 2) {
+            console.log("Valores inválidos!");
+            return;
+        }
+
+        const x = letterToLowercaseNumber(positionA[0]);
+        const y = parseInt(positionA[1]);
+        const toX = letterToLowercaseNumber(positionB[0]);
+        const toY = parseInt(positionB[1]);
+
+        console.log(`Movimento processado como: [${x} ${y}] [${toX} ${toY}]`);
+
+        function letterToLowercaseNumber(letter) {
+            const charCode = letter.charCodeAt(0);
+            if (charCode >= 97 && charCode <= 122) { // Verifica se é uma letra minúscula
+              return charCode - 97;
+            } else {
+              return null; // Ou lance uma exceção: throw new Error("Caractere inválido.");
+            }
+          }
+        
+        // Verifica se a casa de destino está vazia OU se a peça é do adversário
+        if ((board[toY][toX] === '' || board[toY][toX].piece[0] !== piece[0])) {
+            const newBoard = board.map((row, indexY) =>
+                row.map((cell, indexX) => {
+                    if (indexY === y && indexX === x) {
+                        return { piece: '', x: indexX, y: indexY }; // Casa de origem fica vazia
+                    } else if (indexY === toY && indexX === toX) {
+                        return { piece: piece, x: indexX, y: indexY }; // Peça movida para a nova posição
+                    } else {
+                        return cell;
+                    }
+                }));
+        setBoard(newBoard);
+        }
+    };
+
     const handleDrop = (e, toY, toX) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
@@ -287,19 +346,20 @@ export default function Game() {
                     }
                 })
             );
-            setBoard(newBoard);
             //setTurn(identity == white ? black : white);
+            setBoard(newBoard);
 
-            function numberToLetter(num) {
+            function numberToLetterLowercase(num) {
                 if (num < 0 || num > 25) {
                   return null; // Ou lance uma exceção
                 }
-                return String.fromCharCode(65 + num); // 65 é o código ASCII de 'A'
+                return String.fromCharCode(97 + num); // 97 é o código ASCII de 'a'
             }
-            console.log("Testando a TRANSIÇÃO: ", x, y, toX, toY);
-            console.log("Testando a TRANSIÇÃO: ", x, 8 - y, toX, 8 - toY);
-            console.log("Testando a TRANSIÇÃO: ",`${numberToLetter(x)}${y} -> ${numberToLetter(toX)}${toY}`);
-            socket.emit('move', `${numberToLetter(x)}${y}`, `${numberToLetter(toX)}${toY}`)
+
+            const from = `${numberToLetterLowercase(x)}${8-y}`;
+            const to = `${numberToLetterLowercase(toX)}${8-toY}`;
+            console.log("Movimento: ", from + ' -> ' + to);
+            socket.emit('move', from, to, newBoard);
         } else {
             console.error('Casa ocupada por uma peça sua!');
         }
@@ -392,6 +452,7 @@ export default function Game() {
                                     <p className='game-subtitles'>Jogadores</p>
                                 </div>
                                 <div className="bar"/>
+                                <p className='game-p'>Você: [ {identity} ]</p>
                                 <p className='game-p'>Partida: [ {players} ]</p>
                                 <p className='game-p'>Espectadores: [ {} ]</p>
                             </div>

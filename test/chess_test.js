@@ -3,7 +3,7 @@ import { Chess } from "chess.js"
 const chess = new Chess();
 
 try {
-    chess.move({from: 'b1', to: 'a3'});
+    chess.move({from: 'b1', to: 'c3'});
 } catch(e) {
     console.log("Erro: ", e);
 }
@@ -14,4 +14,4 @@ try {
     console.log("Erro: ", e);
 }
 
-console.log(chess.ascii());
+console.log();

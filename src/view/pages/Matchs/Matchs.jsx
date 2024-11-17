@@ -80,6 +80,7 @@ export default function Match() {
     };
 
     const handleButtonMatchPublicClick = (name) => {
+        setName(name);
         console.log("MatchsCLick", name, password);
         socket.emit('joinRoom', 'd', name, password);
     };
